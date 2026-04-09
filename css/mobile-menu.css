@@ -1,0 +1,165 @@
+/* ========================================
+   MILAGRO - Mobile Menu Styles
+   ======================================== */
+
+/* Botón Hamburguesa */
+.mobile-menu-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: 2px solid var(--verde-oscuro);
+    color: var(--verde-oscuro);
+    font-size: 1.4rem;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.mobile-menu-btn:hover {
+    background: var(--verde-oscuro);
+    color: white;
+}
+
+/* Ocultar en desktop */
+@media (min-width: 768px) {
+    .mobile-menu-btn { display: none !important; }
+}
+
+/* Mostrar solo el hamburguesa y carrito en mobile */
+@media (max-width: 767px) {
+    .desktop-nav { display: none !important; }
+}
+
+/* ---- Overlay ---- */
+.mobile-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.mobile-menu-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ---- Panel lateral ---- */
+.mobile-menu-panel {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 85%;
+    max-width: 340px;
+    height: 100vh;
+    background: white;
+    box-shadow: -5px 0 30px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    transition: right 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    z-index: 10000;
+}
+
+.mobile-menu-overlay.active .mobile-menu-panel {
+    right: 0;
+}
+
+/* ---- Header del panel ---- */
+.mobile-menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.mobile-menu-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--texto-secundario);
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s;
+}
+
+.mobile-menu-close:hover {
+    background: var(--gris-claro);
+    color: var(--error);
+}
+
+/* ---- Links de navegación ---- */
+.mobile-menu-nav {
+    flex: 1;
+    padding: 1rem 0;
+    overflow-y: auto;
+}
+
+.mobile-menu-nav a {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 1rem 1.5rem;
+    color: var(--texto-principal);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.05rem;
+    border-left: 3px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.mobile-menu-nav a:hover,
+.mobile-menu-nav a:active {
+    background: linear-gradient(90deg, rgba(44,110,55,0.06) 0%, transparent 100%);
+    border-left-color: var(--verde-oscuro);
+    color: var(--verde-oscuro);
+}
+
+.mobile-menu-nav a i {
+    font-size: 1.15rem;
+    width: 24px;
+    text-align: center;
+    color: var(--verde-medio);
+}
+
+/* ---- Footer del panel (Auth btn) ---- */
+.mobile-menu-footer {
+    padding: 1.25rem 1.5rem;
+    border-top: 1px solid #eee;
+}
+
+.mobile-auth-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 0.85rem;
+    background: var(--verde-oscuro);
+    color: white !important;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1rem;
+    transition: all 0.2s;
+}
+
+.mobile-auth-btn:hover {
+    background: var(--verde-medio);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(44,110,55,0.3);
+}
