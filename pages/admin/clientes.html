@@ -7,6 +7,7 @@
     
     <link rel="stylesheet" href="../../css/styles.css">
     <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/admin-mobile.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -82,6 +83,26 @@
         </div>
     </main>
 
+    <!-- Modal Agregar Puntos -->
+    <div class="modal-overlay" id="addPointsModal">
+        <div class="modal-content fade-in">
+            <h2 class="color-verde" style="margin-bottom:20px;"><i class="fa-solid fa-star"></i> Cargar Puntos</h2>
+            <p>Cliente: <strong id="apName"></strong></p>
+            <div class="form-group" style="text-align:left; margin-top:1rem;">
+                <label class="form-label">Total de la compra física ($)</label>
+                <input type="number" id="apAmount" class="form-control" placeholder="Ej: 85000" min="1000" step="1000">
+                <small style="color:var(--gris-medio); display:block; margin-top:5px;">
+                    Puntos a ganar: <span id="apPointsPreview" style="font-weight:bold; color:var(--verde-oscuro);">0 pts</span>
+                    (1 punto por cada $1.000)
+                </small>
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+                <button type="button" class="btn btn-outline" onclick="closeAddPointsModal()">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="confirmAddPoints()"><i class="fa-solid fa-check"></i> Guardar Puntos</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal Redimir Puntos -->
     <div class="modal-overlay" id="redeemModal">
         <div class="modal-content fade-in">
@@ -105,14 +126,23 @@
     <script src="../../js/utils.js"></script>
     <script>
         let selectedCedula = null;
+        let selectedPhone = null;
+        let selectedName = null;
 
         document.addEventListener('DOMContentLoaded', () => {
             renderClients();
 
-            // Actualizar equivalente en tiempo real
+            // Actualizar equivalente en tiempo real - Modal Redimir
             document.getElementById('rdAmount').addEventListener('input', (e) => {
                 const val = parseInt(e.target.value) || 0;
                 document.getElementById('rdEquivalent').textContent = formatCOP(val * 20);
+            });
+
+            // Preview puntos a cargar - Modal Agregar
+            document.getElementById('apAmount').addEventListener('input', (e) => {
+                const val = parseFloat(e.target.value) || 0;
+                const pts = Math.floor(val / 1000);
+                document.getElementById('apPointsPreview').textContent = pts + ' pts';
             });
         });
 
@@ -145,7 +175,7 @@
                     <td><span style="font-size:1.1rem; color:var(--verde-oscuro); font-weight:bold;"><i class="fa-solid fa-star"></i> ${pts}</span></td>
                     <td>${formatCOP(eq)}</td>
                     <td style="display:flex; gap:5px; flex-wrap:wrap;">
-                        <button class="btn btn-primary btn-sm" onclick="openAddPoints('${c.cedula}', '${c.name}', '${c.phone}')" style="padding:5px;">
+                        <button class="btn btn-primary btn-sm" onclick="openAddPointsModal('${c.cedula}', '${c.name}', '${c.phone}')" style="padding:5px;">
                             <i class="fa-solid fa-plus"></i> Puntos
                         </button>
                         <button class="btn-redeem" onclick="openRedeemModal('${c.cedula}', '${c.name}', ${pts})" ${pts <= 0 ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''} style="padding:5px;">
@@ -160,6 +190,55 @@
             });
         };
 
+        // ================== AGREGAR PUNTOS (MODAL) ==================
+        const openAddPointsModal = (cedula, name, phone) => {
+            selectedCedula = cedula;
+            selectedPhone = phone;
+            selectedName = name;
+            document.getElementById('apName').textContent = name;
+            document.getElementById('apAmount').value = '';
+            document.getElementById('apPointsPreview').textContent = '0 pts';
+            document.getElementById('addPointsModal').style.display = 'flex';
+        };
+
+        const closeAddPointsModal = () => {
+            selectedCedula = null;
+            selectedPhone = null;
+            selectedName = null;
+            document.getElementById('addPointsModal').style.display = 'none';
+        };
+
+        const confirmAddPoints = () => {
+            const amountStr = document.getElementById('apAmount').value;
+            const val = parseFloat(amountStr);
+            if(!val || val < 1000) {
+                alert('Ingresa un valor válido (mínimo $1.000).');
+                return;
+            }
+
+            const pointsGained = Math.floor(val / 1000);
+            const users = JSON.parse(localStorage.getItem('milagro_db_users')) || [];
+            const idx = users.findIndex(u => String(u.cedula) === String(selectedCedula));
+
+            if(idx > -1) {
+                users[idx].points = (users[idx].points || 0) + pointsGained;
+                localStorage.setItem('milagro_db_users', JSON.stringify(users));
+                renderClients();
+
+                // WhatsApp Bridge
+                const waMsg = `¡Hola ${selectedName}! 🌟\nGracias por tu compra en MilAgro CS S.A.S.\nHemos cargado *${pointsGained} puntos* a tu cuenta.\n\nActualmente tienes un total de *${users[idx].points} puntos* disponibles para canjear en tus próximas compras.\n\n_(Cada punto equivale a $20)_ 🎁`;
+                const waUrl = `https://wa.me/57${selectedPhone}?text=${encodeURIComponent(waMsg)}`;
+
+                closeAddPointsModal();
+                if(confirm(`¡${pointsGained} puntos cargados con éxito!\n¿Deseas notificarle al cliente por WhatsApp?`)) {
+                    window.open(waUrl, '_blank');
+                }
+            } else {
+                alert('Error: Cliente no encontrado en la base de datos.');
+            }
+        };
+
+        // ================== REDIMIR PUNTOS ==================
         const openRedeemModal = (cedula, name, points) => {
             selectedCedula = cedula;
             document.getElementById('rdName').textContent = name;
@@ -193,34 +272,7 @@
             }
         };
 
-        // --- AGREGAR PUNTOS ---
-        let targetPhone = "";
-        const openAddPoints = (cedula, name, phone) => {
-            const amount = prompt(`¿Cuánto fue el total de la compra física de ${name}?\nEl sistema dividirá esto por 1000 para asignarle puntos.`);
-            if(amount) {
-                const val = parseFloat(amount.replace(/[^0-9]/g, ''));
-                if(val && val > 0) {
-                    const pointsGained = Math.floor(val / 1000);
-                    
-                    const users = JSON.parse(localStorage.getItem('milagro_db_users')) || [];
-                    const idx = users.findIndex(u => String(u.cedula) === String(cedula));
-                    if(idx > -1) {
-                        users[idx].points = (users[idx].points || 0) + pointsGained;
-                        localStorage.setItem('milagro_db_users', JSON.stringify(users));
-                        renderClients();
-
-                        // WhatsApp Bridge
-                        const waMsg = `¡Hola ${name}! 🌟\nGracias por tu compra en MilAgro CS S.A.S.\nHemos cargado ${pointsGained} puntos a tu cuenta.\n\nActualmente tienes un total de ${users[idx].points} puntos disponibles para canjear en tus próximas compras.`;
-                        const waUrl = `https://wa.me/57${phone}?text=${encodeURIComponent(waMsg)}`;
-                        
-                        alert(`¡Puntos cargados con éxito! Se abrirá WhatsApp para notificarle.`);
-                        window.open(waUrl, '_blank');
-                    }
-                }
-            }
-        };
-
-        // --- EDITAR CLIENTE ---
+        // ================== EDITAR CLIENTE ==================
         const openEditModal = (cedula, name, phone, email) => {
             const newPhone = prompt(`Editar Celular de ${name}:`, phone);
             if(newPhone !== null) {
@@ -238,5 +290,6 @@
             }
         };
     </script>
+    <script src="../../js/admin-mobile.js"></script>
 </body>
 </html>

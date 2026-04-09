@@ -1,12 +1,13 @@
 /**
- * MILAGRO - Lógica Checkout
+ * MILAGRO - Lógica Checkout con Redención de Puntos
  */
 
 let paymentMethod = 'wompi'; // default
 let cartTotal = 0;
 let cartItemsText = '';
-
 let cartSubtotal = 0;
+let pointsDiscount = 0; // descuento aplicado por puntos
+let pointsRedeemed = 0; // puntos canjeados
 
 document.addEventListener('DOMContentLoaded', () => {
     // Autocompletar datos si está logueado
@@ -26,16 +27,133 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     cartSubtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    cartTotal = cartSubtotal; // El envío NO se suma al total
+    cartTotal = cartSubtotal;
 
     // Construir texto resumen para WhatsApp
     cart.forEach(item => {
         cartItemsText += `- ${item.quantity}x ${item.name} ($${item.price} c/u)\n`;
     });
 
-    // Mostrar total sin envío
-    document.getElementById('finalTotal').textContent = `${formatCOP(cartTotal)} (Envío a convenir)`;
+    updateTotalDisplay();
+
+    // ---- Mostrar panel de puntos si el usuario tiene ----
+    checkUserPoints();
 });
+
+const checkUserPoints = () => {
+    const userStr = localStorage.getItem('milagro_user');
+    if (!userStr) return;
+
+    const user = JSON.parse(userStr);
+    if (user.role !== 'client') return;
+
+    // Leer puntos frescos desde la DB
+    const usersDB = JSON.parse(localStorage.getItem('milagro_db_users')) || [];
+    const freshUser = usersDB.find(u => String(u.cedula) === String(user.cedula));
+    const availablePoints = freshUser ? (freshUser.points || 0) : (user.points || 0);
+
+    if (availablePoints <= 0) return;
+
+    // Calcular el máximo de puntos que se pueden redimir (limitado al valor total)
+    const maxRedeemablePts = Math.min(availablePoints, Math.floor(cartSubtotal / 20));
+    const maxDiscount = maxRedeemablePts * 20;
+
+    // Inyectar el panel de puntos en el checkout
+    const pointsPanel = document.getElementById('pointsPanel');
+    if (!pointsPanel) return;
+
+    pointsPanel.innerHTML = `
+        <div style="background: linear-gradient(135deg, #fff8e1 0%, #fff3cd 100%); border: 2px solid var(--amarillo); border-radius: 12px; padding: 1.2rem; margin-bottom: 1.5rem;">
+            <h4 style="margin: 0 0 8px 0; color: var(--verde-oscuro);">
+                <i class="fa-solid fa-star" style="color:var(--amarillo);"></i> 
+                Tienes <strong>${availablePoints} puntos</strong> disponibles 
+                <small style="color:var(--gris-medio);">(≈ ${formatCOP(availablePoints * 20)} en descuento)</small>
+            </h4>
+            <p style="margin: 0 0 12px 0; font-size: 0.9rem; color: var(--texto-secundario);">
+                Cada punto vale $20. Puedes usar hasta <strong>${maxRedeemablePts} pts</strong> en esta compra (máx. ${formatCOP(maxDiscount)} de descuento).
+            </p>
+            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                <input type="number" id="pointsInput" class="form-control" 
+                       style="max-width:140px;" 
+                       placeholder="Puntos a usar" 
+                       min="0" max="${maxRedeemablePts}" step="1"
+                       oninput="previewPointsDiscount(${availablePoints}, ${maxRedeemablePts})">
+                <button type="button" class="btn btn-primary btn-sm" onclick="applyPoints(${availablePoints}, ${maxRedeemablePts})">
+                    <i class="fa-solid fa-check"></i> Aplicar
+                </button>
+                <button type="button" class="btn btn-outline btn-sm" onclick="removePoints()" id="removePointsBtn" style="display:none;">
+                    <i class="fa-solid fa-xmark"></i> Quitar descuento
+                </button>
+            </div>
+            <div id="pointsPreviewMsg" style="margin-top:10px; font-size:0.9rem; color:var(--verde-oscuro); font-weight:bold;"></div>
+        </div>
+    `;
+
+    pointsPanel.style.display = 'block';
+};
+
+window.previewPointsDiscount = (available, maxPts) => {
+    const input = document.getElementById('pointsInput');
+    const preview = document.getElementById('pointsPreviewMsg');
+    let val = parseInt(input.value) || 0;
+    if (val > maxPts) { val = maxPts; input.value = maxPts; }
+    if (val < 0) { val = 0; input.value = 0; }
+
+    if (val > 0) {
+        const discount = val * 20;
+        const newTotal = cartSubtotal - discount;
+        preview.innerHTML = `✅ Aplicarás <strong>${val} pts</strong> → descuento de <strong>${formatCOP(discount)}</strong> → Total: <strong style="color:var(--error);">${formatCOP(newTotal)}</strong>`;
+    } else {
+        preview.innerHTML = '';
+    }
+};
+
+window.applyPoints = (available, maxPts) => {
+    const input = document.getElementById('pointsInput');
+    let val = parseInt(input.value) || 0;
+    if (val <= 0) { alert('Ingresa cuántos puntos deseas usar.'); return; }
+    if (val > maxPts) { val = maxPts; input.value = maxPts; }
+    if (val > available) { alert('No tienes suficientes puntos.'); return; }
+
+    pointsRedeemed = val;
+    pointsDiscount = val * 20;
+    cartTotal = cartSubtotal - pointsDiscount;
+
+    input.disabled = true;
+    document.getElementById('removePointsBtn').style.display = 'inline-flex';
+    updateTotalDisplay();
+    document.getElementById('pointsPreviewMsg').innerHTML = 
+        `🎉 Descuento aplicado: <strong>${formatCOP(pointsDiscount)}</strong> usando ${pointsRedeemed} puntos.`;
+    showToast(`¡Descuento de ${formatCOP(pointsDiscount)} aplicado!`);
+};
+
+window.removePoints = () => {
+    pointsRedeemed = 0;
+    pointsDiscount = 0;
+    cartTotal = cartSubtotal;
+
+    const input = document.getElementById('pointsInput');
+    if (input) { input.disabled = false; input.value = ''; }
+    const removeBtn = document.getElementById('removePointsBtn');
+    if (removeBtn) removeBtn.style.display = 'none';
+    document.getElementById('pointsPreviewMsg').innerHTML = '';
+
+    updateTotalDisplay();
+};
+
+const updateTotalDisplay = () => {
+    const el = document.getElementById('finalTotal');
+    if (!el) return;
+    if (pointsDiscount > 0) {
+        el.innerHTML = `
+            <span style="text-decoration:line-through; color:#999; font-size:0.9rem;">${formatCOP(cartSubtotal)}</span>
+            <span style="color:var(--error); margin-left:8px;">- ${formatCOP(pointsDiscount)}</span>
+            <br>${formatCOP(cartTotal)} <small style="font-weight:normal; color:var(--texto-secundario);">(Envío a convenir)</small>
+        `;
+    } else {
+        el.textContent = `${formatCOP(cartTotal)} (Envío a convenir)`;
+    }
+};
 
 window.selectPayment = (method) => {
     paymentMethod = method;
@@ -70,39 +188,50 @@ window.processPayment = () => {
         phone: phone,
         address: `${address}, Barrio ${barrio} (${city}, ${dept})`,
         items: cart,
+        subtotal: cartSubtotal,
+        pointsDiscount: pointsDiscount,
+        pointsRedeemed: pointsRedeemed,
         total: cartTotal,
         method: paymentMethod,
-        status: 'pending' // pending, prep, sent, delivered
+        status: 'pending'
     };
 
     const ordersDB = JSON.parse(localStorage.getItem('milagro_db_orders')) || [];
     ordersDB.push(newOrder);
     localStorage.setItem('milagro_db_orders', JSON.stringify(ordersDB));
 
-    // Acumular Puntos (1pto x cada $1000)
+    // Acumular Puntos por la compra (sobre el subtotal, no sobre el total descontado)
     const activeUser = JSON.parse(localStorage.getItem('milagro_user') || 'null');
-    const ptsEarned = Math.floor(cartTotal / 1000);
+    const ptsEarned = Math.floor(cartSubtotal / 1000);
     
     if (activeUser && activeUser.role === 'client') {
         const usersDB = JSON.parse(localStorage.getItem('milagro_db_users')) || [];
         const userIndex = usersDB.findIndex(u => String(u.cedula) === String(activeUser.cedula));
         if (userIndex > -1) {
-            usersDB[userIndex].points = (usersDB[userIndex].points || 0) + ptsEarned;
+            // Restar los puntos redimidos y sumar los ganados
+            const currentPts = usersDB[userIndex].points || 0;
+            usersDB[userIndex].points = Math.max(0, currentPts - pointsRedeemed) + ptsEarned;
             localStorage.setItem('milagro_db_users', JSON.stringify(usersDB));
-            // update session
+            // Actualizar sesión
             activeUser.points = usersDB[userIndex].points;
             localStorage.setItem('milagro_user', JSON.stringify(activeUser));
         }
     }
 
+    const discountLine = pointsRedeemed > 0 
+        ? `\n*Descuento puntos (${pointsRedeemed} pts):* -${formatCOP(pointsDiscount)}` 
+        : '';
+    const ptsLine = pointsRedeemed > 0
+        ? `*(Canjeaste ${pointsRedeemed} pts + Ganas ${ptsEarned} pts nuevos)*`
+        : `*(+ Acumulas ${ptsEarned} Puntos)*`;
+
     if (paymentMethod === 'whatsapp') {
         const waNumber = "573105913506";
-        const msg = `¡Hola MilAgro! 👋\nQuiero hacer un pedido a domicilio:\n\n*Orden:* ${orderId}\n*Cliente:* ${name}\n*Dirección:* ${address}, Barrio ${barrio} (${city}, ${dept})\n\n*Mi Pedido:*\n${cartItemsText}\n*Subtotal productos:* ${formatCOP(cartTotal)}\n*Envío:* A convenir\n*(+ Acumulas ${ptsEarned} Puntos)*\n\nPor favor envíenme el Nequi/Bancolombia.`;
+        const msg = `¡Hola MilAgro! 👋\nQuiero hacer un pedido a domicilio:\n\n*Orden:* ${orderId}\n*Cliente:* ${name}\n*Dirección:* ${address}, Barrio ${barrio} (${city}, ${dept})\n\n*Mi Pedido:*\n${cartItemsText}\n*Subtotal productos:* ${formatCOP(cartSubtotal)}${discountLine}\n*Total a pagar:* ${formatCOP(cartTotal)}\n*Envío:* A convenir\n${ptsLine}\n\nPor favor envíenme el Nequi/Bancolombia.`;
         
         const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`;
         
         localStorage.removeItem('milagro_cart');
-        
         window.open(waUrl, '_blank');
         window.location.href = `order-tracking.html?id=${orderId}`;
 

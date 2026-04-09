@@ -1,0 +1,72 @@
+/* ========================================
+   ADMIN SIDEBAR - Responsive Móvil
+   ======================================== */
+
+/* Botón hamburguesa admin (solo mobile) */
+.admin-hamburger {
+    display: none;
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 2001;
+    background: var(--verde-oscuro);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    width: 44px;
+    height: 44px;
+    font-size: 1.3rem;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+/* Overlay para cerrar sidebar en mobile */
+.admin-sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1999;
+}
+
+@media (max-width: 900px) {
+    /* Ocultar sidebar por defecto en mobile */
+    .admin-sidebar {
+        position: fixed !important;
+        left: -280px !important;
+        z-index: 2000;
+        transition: left 0.35s cubic-bezier(0.22, 1, 0.36, 1) !important;
+        width: 260px !important;
+        height: 100dvh !important;
+        overflow-y: auto;
+    }
+
+    .admin-sidebar.open {
+        left: 0 !important;
+    }
+
+    /* Mover el contenido principal a 0 en mobile */
+    .admin-main {
+        margin-left: 0 !important;
+        padding: var(--sp-md) !important;
+        padding-top: 70px !important; /* espacio para el hamburguesa */
+    }
+
+    /* Mostrar el botón hamburguesa */
+    .admin-hamburger {
+        display: flex !important;
+    }
+
+    /* Overlay visible cuando sidebar abierto */
+    .admin-sidebar-overlay.active {
+        display: block;
+    }
+
+    /* Tablas más compactas en mobile */
+    th, td {
+        padding: 8px 10px !important;
+        font-size: 0.85rem;
+    }
+}
