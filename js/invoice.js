@@ -75,11 +75,42 @@ const _buildPDF = (order) => {
 
     y = 50;
 
-    // ---- WATERMARK MUY SUTIL (FONDO) ----
-    doc.setTextColor(244, 250, 244); // Más transparente / cercano al blanco
-    doc.setFontSize(70);
-    doc.setFont('helvetica', 'bold');
-    doc.text('MilAgro', W / 2, 160, { align: 'center', angle: 30 });
+    // ---- WATERMARK LOGO SUTIL (FONDO) ----
+    let hasGState = false;
+    let gstate12 = null;
+    let gstate100 = null;
+    try {
+        if (window.jspdf && window.jspdf.GState) {
+            gstate12 = new window.jspdf.GState({opacity: 0.12});
+            gstate100 = new window.jspdf.GState({opacity: 1.0});
+            hasGState = true;
+        } else if (JSPDF_CLASS.GState) {
+            gstate12 = new JSPDF_CLASS.GState({opacity: 0.12});
+            gstate100 = new JSPDF_CLASS.GState({opacity: 1.0});
+            hasGState = true;
+        }
+    } catch(e) {}
+
+    if (window.MILAGRO_LOGO_B64 && hasGState) {
+        try {
+            doc.setGState(gstate12);
+            // Tamaño grande y centrado
+            doc.addImage(window.MILAGRO_LOGO_B64, 'PNG', 35, 75, 140, 140, '', 'FAST');
+            doc.setGState(gstate100);
+        } catch(e) {
+            // Failsafe text
+            doc.setTextColor(244, 250, 244);
+            doc.setFontSize(80);
+            doc.setFont('helvetica', 'bold');
+            doc.text('MilAgro', 105, 160, { align: 'center', angle: 30 });
+        }
+    } else {
+        // Fallback a texto si no hay soporte de transparencia seguro
+        doc.setTextColor(244, 250, 244);
+        doc.setFontSize(80);
+        doc.setFont('helvetica', 'bold');
+        doc.text('MilAgro', 105, 160, { align: 'center', angle: 30 });
+    }
 
     // ---- INFO CLIENTE ----
     doc.setFillColor(GRIS_CLARO[0], GRIS_CLARO[1], GRIS_CLARO[2]);
