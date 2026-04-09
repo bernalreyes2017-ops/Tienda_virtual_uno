@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto | MilAgro CS S.A.S</title>
+    
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .site-header { background-color: var(--blanco); box-shadow: var(--shadow-sm); position: sticky; top: 0; z-index: 100; }
+        .header-container { display: flex; align-items: center; justify-content: space-between; padding: 1rem; max-width: 1200px; margin: 0 auto; }
+        .header-logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; }
+        .header-logo h1 { font-size: 1.5rem; margin: 0; display: flex; }
+        .header-logo .mil { color: var(--amarillo); } .header-logo .agro { color: var(--verde-oscuro); }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--sp-xl);
+            padding: var(--sp-2xl) 0;
+        }
+
+        @media(min-width: 768px) {
+            .contact-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        .contact-info {
+            background: var(--verde-oscuro);
+            color: white;
+            padding: var(--sp-xl);
+            border-radius: var(--radius-lg);
+        }
+
+        .info-item {
+            margin-bottom: var(--sp-lg);
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+
+        .info-item i { font-size: 1.5rem; color: var(--amarillo); }
+        .info-item h4 { color: white; margin-bottom: 5px; }
+        .info-item p { color: rgba(255,255,255,0.8); margin: 0; }
+
+        .contact-form {
+            background: white;
+            padding: var(--sp-xl);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+        }
+    </style>
+</head>
+<body class="bg-gris-campo">
+
+    <!-- CABECERA DE NAVEGACIÓN GLOBAL -->
+    <header class="site-header">
+        <div class="header-container">
+            <a href="../index.html" class="header-logo fade-in">
+                <i class="fa-solid fa-seedling" style="color: var(--verde-oscuro); font-size: 1.5rem;"></i>
+                <h1><span class="mil">Mil</span><span class="agro">Agro</span></h1>
+            </a>
+
+            <!-- Agregado class desktop-nav -->
+            <nav class="desktop-nav fade-in" style="display:flex; gap:1.5rem; align-items:center; font-weight:bold;">
+                <a href="../index.html" class="nav-link" style="color:var(--verde-oscuro); text-decoration:none;">Inicio</a>
+                <a href="../index.html#nosotros" class="nav-link" style="color:var(--verde-oscuro); text-decoration:none;">Nosotros</a>
+                <a href="catalogo.html" class="nav-link" style="color:var(--verde-oscuro); text-decoration:none;">Catálogo</a>
+                <a href="delivery.html" class="nav-link" style="color:var(--verde-oscuro); text-decoration:none;">Domicilios</a>
+                <a href="contacto.html" class="nav-link" style="color:var(--verde-oscuro); text-decoration:none;">Contacto</a>
+            </nav>
+
+            <div class="header-actions fade-in" style="display:flex; gap:15px; align-items:center;">
+                <a href="carrito.html" class="cart-icon-wrapper" style="position:relative; color:var(--verde-oscuro); font-size:1.5rem; text-decoration:none;">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-badge" id="cart-counter" style="position:absolute; top:-8px; right:-10px; background:var(--error); color:white; font-size:0.75rem; border-radius:50%; width:20px; height:20px; display:flex; align-items:center; justify-content:center;">0</span>
+                </a>
+                <a href="login.html" class="btn btn-outline btn-sm desktop-nav" id="btnAuthGlobal" style="display:inline-flex;">
+                    <i class="fa-solid fa-user"></i> Ingresar
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <div class="contact-grid">
+            
+            <div class="contact-info">
+                <h2 style="color:var(--amarillo); margin-bottom:var(--sp-xl);">Información de Contacto</h2>
+                
+                <div class="info-item">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <div>
+                        <h4>Sede Principal</h4>
+                        <p>Calle 29 # 39-82<br>Barrio Villa Caribe<br>Montería, Colombia</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <i class="fa-solid fa-phone"></i>
+                    <div>
+                        <h4>Teléfono / WhatsApp</h4>
+                        <p>+57 310 5913506</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <i class="fa-solid fa-clock"></i>
+                    <div>
+                        <h4>Horario de Atención</h4>
+                        <p>Lunes a Viernes de 7:00 am a 5:30 pm<br>y Sábados de 7:00 am a 3:00 pm<br>(Jornada continua)</p>
+                    </div>
+                </div>
+
+                <div style="margin-top:2rem;">
+                    <!-- Embed generico Mapa de Monteria - Villa Caribe -->
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15764.09559372138!2d-75.8719045!3d8.7548771!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e5a2fac0bcda159%3A0x6bba8ca3dbb7c050!2sVilla%20Caribe%2C%20Monter%C3%ADa%2C%20C%C3%B3rdoba!5e0!3m2!1ses!2sco!4v1712431234567!5m2!1ses!2sco" width="100%" height="250" style="border:0; border-radius:10px;" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+            </div>
+
+            <div class="contact-form">
+                <h2 class="color-verde" style="margin-bottom:var(--sp-lg);">Envíanos un mensaje</h2>
+                
+                <form onsubmit="event.preventDefault(); alert('Mensaje enviado. Te contactaremos pronto.'); this.reset();">
+                    <div class="form-group">
+                        <label class="form-label">Nombre Completo</label>
+                        <input type="text" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Celular</label>
+                        <input type="tel" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Motivo</label>
+                        <select class="form-control">
+                            <option>Consulta de producto</option>
+                            <option>Cotización mayorista</option>
+                            <option>Reclamos / Soporte</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Mensaje</label>
+                        <textarea class="form-control" rows="5" required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">Enviar Mensaje</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="../js/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pago | MilAgro CS S.A.S</title>
+    
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .checkout-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--sp-xl);
+            padding: var(--sp-xl) 0;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 768px) {
+            .checkout-layout { grid-template-columns: 1fr 1fr; }
+        }
+
+        .checkout-card {
+            background: white;
+            padding: var(--sp-xl);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .payment-methods {
+            display: flex;
+            flex-direction: column;
+            gap: var(--sp-md);
+            margin-top: var(--sp-md);
+        }
+
+        .payment-option {
+            border: 2px solid var(--gris-claro);
+            border-radius: var(--radius-md);
+            padding: var(--sp-md);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .payment-option:hover { border-color: var(--verde-medio); }
+        .payment-option.selected { 
+            border-color: var(--verde-oscuro); 
+            background: var(--gris-claro); 
+        }
+
+        .payment-icon { font-size: 2rem; color: var(--verde-oscuro); }
+        .whatsapp-icon { color: #25D366; }
+    </style>
+</head>
+<body class="bg-gris-campo">
+
+    <header class="site-header" style="background:white; padding:1rem; text-align:center; box-shadow:var(--shadow-sm);">
+        <a href="../index.html" style="text-decoration:none; display:inline-flex; align-items:center; gap:10px;">
+            <i class="fa-solid fa-seedling" style="color: var(--verde-oscuro); font-size: 1.5rem;"></i>
+            <h1 style="font-size: 1.5rem; margin:0;"><span style="color:var(--amarillo);">Mil</span><span style="color:var(--verde-oscuro);">Agro</span></h1>
+        </a>
+    </header>
+
+    <div class="main-container">
+        <div class="checkout-layout">
+            
+            <!-- FORMULARIO DATOS -->
+            <div class="checkout-card">
+                <h3 class="color-verde" style="margin-bottom:1rem;"><i class="fa-solid fa-map-location-dot"></i> Datos de Envío</h3>
+                <form id="checkoutForm">
+                    <div class="form-group">
+                        <label class="form-label">Nombre Completo</label>
+                        <input type="text" class="form-control" id="ckName" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Celular (WhatsApp)</label>
+                        <input type="number" class="form-control" id="ckPhone" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Departamento</label>
+                        <select class="form-control" id="ckDept">
+                            <option value="Cordoba">Córdoba</option>
+                            <option value="Otro">Otro (Envío Nacional)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ciudad / Municipio</label>
+                        <select class="form-control" id="ckCity">
+                            <option value="Monteria">Montería</option>
+                            <option value="Otro">Otra ciudad (Envío Nacional)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Barrio</label>
+                        <input type="text" class="form-control" id="ckBarrio" placeholder="Ej: Villa Caribe" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Dirección Exacta</label>
+                        <input type="text" class="form-control" id="ckAddress" placeholder="Ej: Calle 29 # 39-82" required>
+                    </div>
+                </form>
+            </div>
+
+            <!-- METODOS DE PAGO Y RESUMEN -->
+            <div class="checkout-card">
+                <h3 class="color-verde" style="margin-bottom:1rem;"><i class="fa-solid fa-wallet"></i> Medio de Pago</h3>
+                
+                <div class="payment-methods">
+                    <div class="payment-option selected" id="optWompi" onclick="selectPayment('wompi')">
+                        <i class="fa-solid fa-credit-card payment-icon"></i>
+                        <div>
+                            <strong>Pasarela Wompi (Tarjetas / PSE)</strong>
+                            <p style="margin:0; font-size:0.85rem; color:#666;">Pago 100% seguro con código.</p>
+                        </div>
+                    </div>
+
+                    <div class="payment-option" id="optWhatsapp" onclick="selectPayment('whatsapp')">
+                        <i class="fa-brands fa-whatsapp payment-icon whatsapp-icon"></i>
+                        <div>
+                            <strong>Pagar vía WhatsApp</strong>
+                            <p style="margin:0; font-size:0.85rem; color:#666;">Te enviaremos el nequi o bancolombia por chat.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top:2rem; padding-top:1rem; border-top:2px solid var(--gris-claro);">
+                    <div style="display:flex; justify-content:space-between; font-size:1.2rem; font-weight:bold;">
+                        <span>Total a Pagar:</span>
+                        <span class="color-verde" id="finalTotal">$0</span>
+                    </div>
+                    <p style="font-size:0.85rem; color:var(--texto-secundario); margin-top:5px; text-align:right;"><i class="fa-solid fa-truck"></i> El envío se cotizará por WhatsApp según el peso y destino</p>
+                    <button onclick="processPayment()" class="btn btn-primary btn-block" style="margin-top:1.5rem; font-size:1.2rem;">
+                        Confirmar Pedido
+                    </button>
+                    <!-- Script de Wompi se inyectará aquí si se elige wompi -->
+                    <div id="wompiContainer" style="margin-top:10px;text-align:center;"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/auth.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/checkout.js"></script>
+
+</body>
+</html>

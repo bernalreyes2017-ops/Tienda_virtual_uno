@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domicilios | MilAgro CS S.A.S</title>
+    
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .site-header { background-color: var(--blanco); box-shadow: var(--shadow-sm); position: sticky; top: 0; z-index: 100; }
+        .header-container { display: flex; align-items: center; justify-content: space-between; padding: 1rem; max-width: 1200px; margin: 0 auto; }
+        .header-logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; }
+        .header-logo h1 { font-size: 1.5rem; margin: 0; display: flex; }
+        .header-logo .mil { color: var(--amarillo); } .header-logo .agro { color: var(--verde-oscuro); }
+
+        .delivery-hero {
+            background-color: var(--verde-oscuro);
+            color: white;
+            padding: var(--sp-3xl) 0;
+            text-align: center;
+        }
+
+        .delivery-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--sp-xl);
+            padding: var(--sp-2xl) 0;
+        }
+
+        @media (min-width: 768px) {
+            .delivery-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        .info-card {
+            background: white;
+            padding: var(--sp-lg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .info-card h3 { color: var(--verde-oscuro); margin-bottom: 1rem; }
+        
+        ul.coverage-list { padding-left: 20px; }
+        ul.coverage-list li { margin-bottom: 10px; color: var(--texto-secundario); }
+
+        .price-tag {
+            font-size: 2rem;
+            color: var(--amarillo);
+            font-weight: 800;
+        }
+    </style>
+</head>
+<body class="bg-gris-campo">
+
+    <!-- CABECERA DE NAVEGACIÓN GLOBAL -->
+    <header class="site-header">
+        <div class="header-container">
+            <a href="../index.html" class="header-logo fade-in">
+                <i class="fa-solid fa-seedling" style="color: var(--verde-oscuro); font-size: 1.5rem;"></i>
+                <h1><span class="mil">Mil</span><span class="agro">Agro</span></h1>
+            </a>
+
+            <!-- Agregado class desktop-nav -->
+            <nav class="desktop-nav fade-in" style="display:flex; gap:1.5rem; align-items:center; font-weight:bold;">
+                <a href="../index.html" class="nav-link" style="color:var(--verde-oscuro); text-decoration:none;">Inicio</a>
+                <a href="../index.html#nosotros" class="nav-link" style="color:var(--verde-oscuro); text-decoration:none;">Nosotros</a>
+                <a href="catalogo.html" class="nav-link" style="color:var(--verde-oscuro); text-decoration:none;">Catálogo</a>
+                <a href="delivery.html" class="nav-link" style="color:var(--verde-oscuro); text-decoration:none;">Domicilios</a>
+                <a href="contacto.html" class="nav-link" style="color:var(--verde-oscuro); text-decoration:none;">Contacto</a>
+            </nav>
+
+            <div class="header-actions fade-in" style="display:flex; gap:15px; align-items:center;">
+                <a href="carrito.html" class="cart-icon-wrapper" style="position:relative; color:var(--verde-oscuro); font-size:1.5rem; text-decoration:none;">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-badge" id="cart-counter" style="position:absolute; top:-8px; right:-10px; background:var(--error); color:white; font-size:0.75rem; border-radius:50%; width:20px; height:20px; display:flex; align-items:center; justify-content:center;">0</span>
+                </a>
+                <a href="login.html" class="btn btn-outline btn-sm desktop-nav" id="btnAuthGlobal" style="display:inline-flex;">
+                    <i class="fa-solid fa-user"></i> Ingresar
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="delivery-hero">
+        <div class="main-container">
+            <i class="fa-solid fa-motorcycle" style="font-size:4rem; color:var(--amarillo); margin-bottom:1rem;"></i>
+            <h2>Llevamos el campo a la puerta de tu casa o finca</h2>
+            <p style="color:var(--gris-medio); font-size:1.2rem;">Servicio de domicilio seguro y rápido en Montería.</p>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="delivery-grid">
+            
+            <div class="info-card">
+                <h3><i class="fa-solid fa-map-location-dot"></i> Zonas de Cobertura</h3>
+                <ul class="coverage-list">
+                    <li><strong>Perímetro urbano de Montería:</strong> Se entrega en menos de 24 horas.</li>
+                    <li><strong>Veredas Cercanas:</strong> En menos de 48 horas.</li>
+                    <li><strong>Envíos Nacionales:</strong> Entre 5 y 8 días hábiles.</li>
+                </ul>
+                <p style="margin-top:1rem; font-size:0.9rem; color:var(--error);"><strong>Nota:</strong> El valor del envío lo asume el cliente.</p>
+            </div>
+
+            <div class="info-card">
+                <h3><i class="fa-solid fa-money-bill-wave"></i> Tarifas de Envío</h3>
+                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding-bottom:10px; margin-bottom:10px;">
+                    <span>Villa Caribe y sus alrededores</span>
+                    <span class="price-tag">$4.000</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding-bottom:10px; margin-bottom:10px;">
+                    <span>El resto de Montería</span>
+                    <span class="price-tag">$5.000</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span>Veredas y Envíos Nacionales</span>
+                    <span style="font-weight:bold; color:var(--texto-principal);">Cotizar abajo 👇</span>
+                </div>
+
+                <a href="https://wa.me/573105913506" class="btn btn-whatsapp btn-block" style="margin-top:2rem;">
+                    Cotizar envío por WhatsApp
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="../js/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito | MilAgro CS S.A.S</title>
+    
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/animations.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .cart-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--sp-xl);
+            padding: var(--sp-2xl) 0;
+        }
+
+        @media (min-width: 992px) {
+            .cart-layout {
+                grid-template-columns: 2fr 1fr;
+            }
+        }
+
+        .cart-items-container {
+            background: var(--blanco);
+            border-radius: var(--radius-lg);
+            padding: var(--sp-lg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: var(--sp-md);
+            padding: var(--sp-md) 0;
+            border-bottom: 1px solid var(--gris-claro);
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .cart-item-img {
+            width: 80px;
+            height: 80px;
+            border-radius: var(--radius-sm);
+            object-fit: cover;
+            background-color: var(--gris-claro);
+        }
+
+        .cart-item-details {
+            flex-grow: 1;
+        }
+
+        .cart-item-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--verde-oscuro);
+            margin-bottom: 0.25rem;
+        }
+
+        .cart-item-price {
+            color: var(--texto-secundario);
+            font-weight: 600;
+        }
+
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--gris-claro);
+            padding: 0.25rem;
+            border-radius: var(--radius-pill);
+            width: fit-content;
+            margin-top: 0.5rem;
+        }
+
+        .qty-btn {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .qty-val {
+            font-weight: 700;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .cart-item-remove {
+            color: var(--error);
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        /* Bloque de Resumen */
+        .cart-summary {
+            background: var(--verde-oscuro);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: var(--sp-xl);
+            height: fit-content;
+            position: sticky;
+            top: 90px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--sp-sm);
+            font-size: 1.1rem;
+        }
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            padding-top: var(--sp-md);
+            margin-top: var(--sp-md);
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--amarillo);
+        }
+
+        .empty-cart-state {
+            text-align: center;
+            padding: var(--sp-3xl) 0;
+        }
+
+        /* Tweak Header */
+        .site-header { background-color: var(--blanco); box-shadow: var(--shadow-sm); position: sticky; top: 0; z-index: 100; }
+        .header-container { display: flex; align-items: center; justify-content: space-between; padding: 1rem; max-width: 1200px; margin: 0 auto; }
+        .header-logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; }
+        .header-logo h1 { font-size: 1.5rem; margin: 0; display: flex; }
+        .header-logo .mil { color: var(--amarillo); } .header-logo .agro { color: var(--verde-oscuro); }
+    </style>
+</head>
+<body class="bg-gris-campo">
+
+    <!-- CABECERA DE NAVEGACIÓN GLOBAL -->
+    <header class="site-header">
+        <div class="header-container">
+            <a href="../index.html" class="header-logo fade-in">
+                <i class="fa-solid fa-seedling" style="color: var(--verde-oscuro); font-size: 1.5rem;"></i>
+                <h1><span class="mil">Mil</span><span class="agro">Agro</span></h1>
+            </a>
+
+            <!-- Agregado class desktop-nav -->
+            <nav class="desktop-nav fade-in" style="display:flex; gap:1.5rem; align-items:center; font-weight:bold;">
+                <a href="../index.html" class="nav-link" style="color:var(--verde-oscuro); text-decoration:none;">Inicio</a>
+                <a href="../index.html#nosotros" class="nav-link" style="color:var(--verde-oscuro); text-decoration:none;">Nosotros</a>
+                <a href="catalogo.html" class="nav-link" style="color:var(--verde-oscuro); text-decoration:none;">Catálogo</a>
+                <a href="delivery.html" class="nav-link" style="color:var(--verde-oscuro); text-decoration:none;">Domicilios</a>
+                <a href="contacto.html" class="nav-link" style="color:var(--verde-oscuro); text-decoration:none;">Contacto</a>
+            </nav>
+
+            <div class="header-actions fade-in" style="display:flex; gap:15px; align-items:center;">
+                <a href="carrito.html" class="cart-icon-wrapper" style="position:relative; color:var(--verde-oscuro); font-size:1.5rem; text-decoration:none;">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-badge" id="cart-counter" style="position:absolute; top:-8px; right:-10px; background:var(--error); color:white; font-size:0.75rem; border-radius:50%; width:20px; height:20px; display:flex; align-items:center; justify-content:center;">0</span>
+                </a>
+                <a href="login.html" class="btn btn-outline btn-sm desktop-nav" id="btnAuthGlobal" style="display:inline-flex;">
+                    <i class="fa-solid fa-user"></i> Ingresar
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container fade-in">
+        <div class="cart-layout">
+            
+            <!-- Lista de Productos -->
+            <div>
+                <h2 class="color-verde" style="margin-bottom: var(--sp-md);"><i class="fa-solid fa-cart-shopping"></i> Tu Carrito de Compras</h2>
+                <div class="cart-items-container" id="cartItemsList">
+                    <!-- Se llena con JS -->
+                </div>
+            </div>
+
+            <!-- Resumen Total -->
+            <div class="cart-summary" id="cartSummarySection" style="display:none;">
+                <h3 style="color:white; margin-bottom: 1.5rem;">Resumen de Pedido</h3>
+                
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span id="subtotalVal">$0</span>
+                </div>
+                <div class="summary-row">
+                    <span>Envío</span>
+                    <span style="font-size:0.9rem;">Se calcula en checkout</span>
+                </div>
+                
+                <!-- Input Descuento -->
+                <div style="margin-top:1.5rem; display:flex; gap:10px;">
+                    <input type="text" id="promoCode" class="form-control" placeholder="Cód. descuento" style="padding:0.5rem; border:none; border-radius:5px;">
+                    <button class="btn btn-primary" onclick="window.applyPromo()" style="padding:0.5rem 1rem; border-radius:5px;">Aplicar</button>
+                </div>
+                
+                <div class="summary-total">
+                    <span>Total COP</span>
+                    <span id="totalVal">$0</span>
+                </div>
+
+                <a href="checkout.html" class="btn btn-primary btn-block" style="margin-top: 2rem;">
+                    Proceder al Pago <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/auth.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/cart.js"></script>
+    
+</body>
+</html>

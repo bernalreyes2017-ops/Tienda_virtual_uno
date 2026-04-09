@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo | MilAgro CS S.A.S</title>
+    
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/animations.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .catalog-container {
+            display: flex;
+            flex-direction: column;
+            gap: var(--sp-xl);
+            padding: var(--sp-2xl) 0;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .filter-section {
+            background: var(--blanco);
+            padding: var(--sp-md);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 70px;
+            z-index: 10;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: var(--sp-sm);
+        }
+
+        .category-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--sp-sm);
+            margin-top: var(--sp-md);
+        }
+
+        .chip {
+            background: var(--gris-claro);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            font-weight: 600;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .chip:hover {
+            background: #e6eee6;
+        }
+
+        .chip.active {
+            background: var(--verde-claro);
+            color: white;
+            border-color: var(--verde-oscuro);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: var(--sp-lg);
+        }
+
+        /* Tweak Header para pags internas */
+        .site-header { background-color: var(--blanco); box-shadow: var(--shadow-sm); position: sticky; top: 0; z-index: 100; }
+        .header-container { display: flex; align-items: center; justify-content: space-between; padding: 1rem; max-width: 1200px; margin: 0 auto; }
+        .header-logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; }
+        .header-logo h1 { font-size: 1.5rem; margin: 0; display: flex; }
+        .header-logo .mil { color: var(--amarillo); } .header-logo .agro { color: var(--verde-oscuro); }
+        .header-actions { display: flex; gap: var(--sp-md); align-items: center; }
+        .cart-icon-wrapper { position: relative; color: var(--verde-oscuro); font-size: 1.5rem; text-decoration: none; }
+        .cart-badge { position: absolute; top: -8px; right: -10px; background-color: var(--error); color: white; font-size: 0.75rem; font-weight: bold; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    </style>
+</head>
+<body class="bg-gris-campo">
+
+    <!-- CABECERA -->
+    <!-- CABECERA DE NAVEGACIÓN GLOBAL -->
+    <header class="site-header">
+        <div class="header-container">
+            <a href="../index.html" class="header-logo fade-in">
+                <i class="fa-solid fa-seedling" style="color: var(--verde-oscuro); font-size: 1.5rem;"></i>
+                <h1><span class="mil">Mil</span><span class="agro">Agro</span></h1>
+            </a>
+
+            <!-- Agregado class desktop-nav -->
+            <nav class="desktop-nav fade-in" style="display:flex; gap:1.5rem; align-items:center; font-weight:bold;">
+                <a href="../index.html" class="nav-link" style="color:var(--verde-oscuro); text-decoration:none;">Inicio</a>
+                <a href="../index.html#nosotros" class="nav-link" style="color:var(--verde-oscuro); text-decoration:none;">Nosotros</a>
+                <a href="catalogo.html" class="nav-link" style="color:var(--verde-oscuro); text-decoration:none;">Catálogo</a>
+                <a href="delivery.html" class="nav-link" style="color:var(--verde-oscuro); text-decoration:none;">Domicilios</a>
+                <a href="contacto.html" class="nav-link" style="color:var(--verde-oscuro); text-decoration:none;">Contacto</a>
+            </nav>
+
+            <div class="header-actions fade-in" style="display:flex; gap:15px; align-items:center;">
+                <a href="carrito.html" class="cart-icon-wrapper" style="position:relative; color:var(--verde-oscuro); font-size:1.5rem; text-decoration:none;">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-badge" id="cart-counter" style="position:absolute; top:-8px; right:-10px; background:var(--error); color:white; font-size:0.75rem; border-radius:50%; width:20px; height:20px; display:flex; align-items:center; justify-content:center;">0</span>
+                </a>
+                <a href="login.html" class="btn btn-outline btn-sm desktop-nav" id="btnAuthGlobal" style="display:inline-flex;">
+                    <i class="fa-solid fa-user"></i> Ingresar
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container catalog-container fade-in">
+        
+        <div class="filter-section">
+            <h2 class="color-verde" style="margin-bottom: 1rem;"><i class="fa-solid fa-magnifying-glass"></i> Catálogo Completo</h2>
+            <div class="search-bar">
+                <input type="text" id="searchInput" class="form-control" placeholder="Buscar por nombre, ej: 'Concentrado Perros'...">
+            </div>
+            <div class="category-chips" id="categoryFilters">
+                <div class="chip active" data-cat="all">Todos</div>
+                <div class="chip" data-cat="mascotas">Mascotas 🐕</div>
+                <div class="chip" data-cat="bovinos">Bovinos 🐄</div>
+                <div class="chip" data-cat="aves">Aves 🐔</div>
+                <div class="chip" data-cat="porcinos">Porcinos 🐖</div>
+                <div class="chip" data-cat="equinos">Equinos 🐎</div>
+                <div class="chip" data-cat="peces">Peces 🐟</div>
+                <div class="chip" data-cat="medicamentos_veterinarios">Medicamentos Veterinarios 💊</div>
+                <div class="chip" data-cat="plaguicidas">Plaguicidas 🧪</div>
+                <div class="chip" data-cat="herramientas_agricolas">Herramientas Agrícolas 🔧</div>
+            </div>
+        </div>
+
+        <div class="products-grid" id="productsGrid">
+            <!-- Loader -->
+            <div style="text-align: center; width: 100%; grid-column: 1 / -1; padding: 50px;">
+                <i class="fa-solid fa-spinner spin" style="font-size: 3rem; color: var(--amarillo);"></i>
+                <p>Cargando los mejores productos del campo...</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/auth.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/products.js"></script>
+    
+</body>
+</html>

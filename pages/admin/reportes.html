@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes | Admin MilAgro</title>
+    
+    <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Librerías para Gráficos y PDF -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        body { background-color: var(--gris-claro); display: flex; min-height: 100vh; margin: 0; }
+        .admin-sidebar { width: 250px; background-color: var(--verde-oscuro); color: white; padding: var(--sp-xl) var(--sp-md); display: flex; flex-direction: column; position: fixed; height: 100vh; }
+        .sidebar-logo { text-align: center; margin-bottom: var(--sp-2xl); display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 1.5rem; color: white; text-decoration: none; }
+        .sidebar-menu a { display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: rgba(255,255,255,0.8); text-decoration: none; border-radius: var(--radius-md); margin-bottom: 5px; transition: all 0.2s; }
+        .sidebar-menu a:hover, .sidebar-menu a.active { background-color: var(--verde-medio); color: white; }
+        .admin-main { flex-grow: 1; margin-left: 250px; padding: var(--sp-xl); }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--sp-lg); background: white; padding: var(--sp-lg); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); }
+        
+        #pdfArea { padding: 10px; }
+        .reports-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-lg); margin-bottom: var(--sp-lg); }
+        .report-card { background: white; padding: var(--sp-lg); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); }
+        .report-card h3 { color: var(--verde-oscuro); margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+
+    <script src="../../js/auth.js"></script>
+
+    <aside class="admin-sidebar" data-html2canvas-ignore="true">
+        <a href="../../index.html" class="sidebar-logo"><i class="fa-solid fa-seedling"></i><span style="font-weight:bold;">MilAgro</span></a>
+        <div class="sidebar-menu">
+            <a href="dashboard.html"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+            <a href="pos.html"><i class="fa-solid fa-cash-register"></i> Punto de Venta</a>
+            <a href="inventario.html"><i class="fa-solid fa-boxes-stacked"></i> Inventario</a>
+            <a href="pedidos.html"><i class="fa-solid fa-truck-fast"></i> Pedidos Web</a>
+            <a href="clientes.html"><i class="fa-solid fa-users"></i> Clientes (CRM)</a>
+            <a href="reportes.html" class="active"><i class="fa-solid fa-file-invoice-dollar"></i> Reportes</a>
+            <a href="configuracion.html"><i class="fa-solid fa-gear"></i> Configuración</a>
+        </div>
+        <div style="margin-top:auto;">
+            <button class="btn btn-outline" onclick="window.handleLogout()" style="width:100%; border-color:white; color:white;"><i class="fa-solid fa-power-off"></i> Cerrar Sesión</button>
+        </div>
+    </aside>
+
+    <main class="admin-main">
+        <header class="admin-header" data-html2canvas-ignore="true">
+            <div>
+                <h2 style="margin:0;">Reportes y Estadísticas</h2>
+                <p style="margin:0; color:var(--texto-secundario);">Análisis de ventas e inventario dinámico.</p>
+            </div>
+            <button class="btn btn-primary" onclick="exportPDF()"><i class="fa-solid fa-file-pdf"></i> Descargar Reporte (PDF)</button>
+        </header>
+
+        <!-- Zona a Exportar como PDF -->
+        <div id="pdfArea" style="background:#f4f5f4;">
+            
+            <div style="display:none;" id="pdfHeader">
+                <center>
+                    <h2 style="color:var(--verde-oscuro);"><br>MilAgro CS S.A.S</h2>
+                    <h2>Reporte Oficial de Ventas</h2>
+                    <p id="pdfDate"></p>
+                    <hr style="margin-bottom:20px;">
+                </center>
+            </div>
+
+            <div class="reports-grid">
+                <div class="report-card">
+                    <h3>Ventas Activas (Por método de pago)</h3>
+                    <canvas id="monthlyChart"></canvas>
+                </div>
+                <div class="report-card">
+                    <h3>Ventas por Categoría (Cantidades)</h3>
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="report-card">
+                <h3>Top Productos Más Vendidos</h3>
+                <table style="width:100%; text-align:left; border-collapse:collapse; margin-top:1rem;">
+                    <thead>
+                        <tr style="border-bottom:2px solid var(--gris-claro);">
+                            <th style="padding:10px;">ID Tícket</th>
+                            <th style="padding:10px;">Producto</th>
+                            <th style="padding:10px;">Unidades</th>
+                            <th style="padding:10px;">Total Orden</th>
+                        </tr>
+                    </thead>
+                    <tbody id="topSellingTable">
+                        <!-- Generado Dinamicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/utils.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const orders = JSON.parse(localStorage.getItem('milagro_db_orders')) || [];
+            
+            // 1. Datos para gráfico de métodos (WhatsApp vs Wompi)
+            let whatsSum = 0; let wompiSum = 0;
+            
+            // 2. Datos para Categorias y Tabla
+            let categoryCount = {};
+            let tableHTML = '';
+
+            orders.forEach(o => {
+                if(o.method === 'whatsapp') whatsSum += o.total;
+                if(o.method === 'wompi') wompiSum += o.total;
+
+                // Contar categorias y armar tabla rápida
+                o.items.forEach(item => {
+                    const cat = item.category || 'otros';
+                    categoryCount[cat] = (categoryCount[cat] || 0) + item.quantity;
+                });
+                
+                tableHTML += `
+                    <tr style="border-bottom:1px solid #eee;">
+                        <td style="padding:10px;">${o.id}</td>
+                        <td>${o.items.map(i=>i.name).join('<br>')}</td>
+                        <td>${o.items.reduce((s,i)=>s+i.quantity, 0)}</td>
+                        <td style="color:var(--verde-oscuro); font-weight:bold;">${formatCOP(o.total)}</td>
+                    </tr>
+                `;
+            });
+
+            if(!tableHTML) tableHTML = '<tr><td colspan="4" style="text-align:center; padding:20px;">No hay ventas registradas aún.</td></tr>';
+            document.getElementById('topSellingTable').innerHTML = tableHTML;
+
+            // Render Chart Ingresos
+            new Chart(document.getElementById('monthlyChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['WhatsApp (Directo)', 'Wompi (Pasarela)'],
+                    datasets: [{
+                        label: 'Ingresos COP',
+                        data: [whatsSum, wompiSum],
+                        backgroundColor: ['#25D366', '#004085']
+                    }]
+                }
+            });
+
+            // Render Chart Categorias
+            const catLabels = Object.keys(categoryCount);
+            const catData = Object.values(categoryCount);
+
+            new Chart(document.getElementById('categoryChart').getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: catLabels.length > 0 ? catLabels : ['Sin Datos'],
+                    datasets: [{
+                        data: catData.length > 0 ? catData : [1],
+                        backgroundColor: ['#f5c518', '#1a6b2e', '#ff8c00', '#2d8a3e', '#7ec15a', '#c2cfc5']
+                    }]
+                }
+            });
+        });
+
+        const exportPDF = () => {
+            const h = document.getElementById('pdfHeader');
+            document.getElementById('pdfDate').textContent = "Generado el: " + new Date().toLocaleString();
+            h.style.display = 'block';
+
+            const element = document.getElementById('pdfArea');
+            const opt = {
+                margin:       0.5,
+                filename:     'Reporte_MilAgro.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                h.style.display = 'none';
+            });
+        };
+    </script>
+</body>
+</html>

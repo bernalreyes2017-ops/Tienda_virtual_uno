@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seguimiento de Pedido | MilAgro</title>
+    
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .site-header { background-color: var(--blanco); box-shadow: var(--shadow-sm); position: sticky; top: 0; z-index: 100; }
+        .header-container { display: flex; align-items: center; justify-content: space-between; padding: 1rem; max-width: 1200px; margin: 0 auto; }
+        .header-logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; }
+        .header-logo h1 { font-size: 1.5rem; margin: 0; display: flex; }
+        .header-logo .mil { color: var(--amarillo); } .header-logo .agro { color: var(--verde-oscuro); }
+
+        .tracking-container {
+            max-width: 800px;
+            margin: 3rem auto;
+            background: white;
+            padding: var(--sp-2xl);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .tracking-header {
+            text-align: center;
+            margin-bottom: var(--sp-xl);
+            border-bottom: 2px solid var(--gris-claro);
+            padding-bottom: var(--sp-md);
+        }
+
+        /* Timeline */
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin: 3rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gris-claro);
+            z-index: 1;
+        }
+
+        .timeline-step {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            width: 25%;
+        }
+
+        .timeline-icon {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border: 4px solid var(--gris-claro);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-size: 1.2rem;
+            color: var(--gris-medio);
+            transition: all 0.3s;
+        }
+
+        .timeline-step.active .timeline-icon, .timeline-step.completed .timeline-icon {
+            border-color: var(--verde-medio);
+            color: var(--verde-oscuro);
+        }
+
+        .timeline-step.completed .timeline-icon { background: var(--verde-medio); color: white; }
+        .timeline-step p { font-weight: bold; font-size: 0.9rem; margin:0; }
+        .timeline-step span { font-size: 0.8rem; color: var(--texto-secundario); }
+
+    </style>
+</head>
+<body class="bg-gris-campo">
+
+    <header class="site-header">
+        <div class="header-container">
+            <a href="../index.html" class="header-logo">
+                <i class="fa-solid fa-seedling" style="color: var(--verde-oscuro); font-size: 1.5rem;"></i>
+                <h1><span class="mil">Mil</span><span class="agro">Agro</span></h1>
+            </a>
+            <a href="mi-cuenta.html" class="btn btn-outline btn-sm"><i class="fa-solid fa-user"></i> Mi Cuenta</a>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <div class="tracking-container fade-in">
+            <div class="tracking-header">
+                <h2>Seguimiento de Pedido</h2>
+                <h3 class="color-verde" id="orderIdText">Cargando...</h3>
+                <p id="orderDateText">--</p>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-step" id="step-pending">
+                    <div class="timeline-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+                    <p>Recibido</p>
+                    <span>Esperando pago</span>
+                </div>
+                <div class="timeline-step" id="step-prep">
+                    <div class="timeline-icon"><i class="fa-solid fa-box-open"></i></div>
+                    <p>Preparando</p>
+                    <span>En bodega</span>
+                </div>
+                <div class="timeline-step" id="step-sent">
+                    <div class="timeline-icon"><i class="fa-solid fa-motorcycle"></i></div>
+                    <p>En Camino</p>
+                    <span>Con el repartidor</span>
+                </div>
+                <div class="timeline-step" id="step-delivered">
+                    <div class="timeline-icon"><i class="fa-solid fa-house-circle-check"></i></div>
+                    <p>Entregado</p>
+                    <span>¡Gracias por la compra!</span>
+                </div>
+            </div>
+
+            <div style="background:var(--gris-claro); padding:var(--sp-lg); border-radius:var(--radius-md); margin-top:2rem;">
+                <h4 style="margin-bottom:10px;">Resumen:</h4>
+                <ul id="orderItemsList" style="padding-left:20px; margin-bottom:15px; font-size:0.9rem;"></ul>
+                <div style="display:flex; justify-content:space-between; font-size:1.2rem; font-weight:bold;">
+                    <span>Total Pagado:</span>
+                    <span class="color-verde" id="orderTotalText">--</span>
+                </div>
+            </div>
+            
+            <p style="text-align:center; margin-top:2rem; font-size:0.9rem; color:#888;">Si cancelaste por celular, actualiza periódicamente para ver el estado cuando un administrador lo marque.</p>
+        </div>
+    </div>
+
+    <script src="../js/utils.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            
+            if(!id) {
+                alert("No se indicó pedido.");
+                window.location.href = '../index.html';
+                return;
+            }
+
+            const ordersDB = JSON.parse(localStorage.getItem('milagro_db_orders')) || [];
+            const order = ordersDB.find(o => o.id === id);
+
+            if(!order) {
+                document.getElementById('orderIdText').textContent = "Pedido no encontrado";
+                return;
+            }
+
+            document.getElementById('orderIdText').textContent = order.id;
+            document.getElementById('orderDateText').textContent = new Date(order.date).toLocaleString('es-CO');
+            document.getElementById('orderTotalText').textContent = formatCOP(order.total);
+            
+            const ul = document.getElementById('orderItemsList');
+            order.items.forEach(item => {
+                ul.innerHTML += `<li>${item.quantity}x ${item.name}</li>`;
+            });
+
+            // Setear Timeline
+            const sPending = document.getElementById('step-pending');
+            const sPrep = document.getElementById('step-prep');
+            const sSent = document.getElementById('step-sent');
+            const sDeliv = document.getElementById('step-delivered');
+
+            sPending.classList.add('completed'); // Siempre recibido
+            
+            if (order.status === 'prep') {
+                sPrep.classList.add('active');
+            } else if(order.status === 'sent') {
+                sPrep.classList.add('completed');
+                sSent.classList.add('active');
+            } else if(order.status === 'delivered') {
+                sPrep.classList.add('completed');
+                sSent.classList.add('completed');
+                sDeliv.classList.add('completed');
+            }
+        });
+    </script>
+</body>
+</html>

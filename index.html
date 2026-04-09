@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MilAgro CS S.A.S | Los mejores alimentos para animales</title>
+    <meta name="description" content="Almacén agropecuario en Montería. Alimentos para mascotas, bovinos, aves, porcinos, herramientas y más.">
+    
+    <!-- CSS y Animaciones -->
+    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="./css/components.css">
+    <link rel="stylesheet" href="./css/animations.css">
+    
+    <!-- FontAwesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Estilos específicos de index.html (Header/Hero/Sections) */
+        
+        /* HEADER NAV */
+        .site-header {
+            background-color: var(--blanco);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+        
+        .header-logo img {
+            height: 50px;
+        }
+
+        .header-logo h1 {
+            font-size: 1.8rem;
+            margin: 0;
+            display: flex;
+        }
+
+        .header-logo .mil { color: var(--amarillo); }
+        .header-logo .agro { color: var(--verde-oscuro); }
+
+        .desktop-nav {
+            display: none;
+            gap: var(--sp-lg);
+        }
+
+        @media (min-width: 768px) {
+            .desktop-nav { display: flex; align-items: center; }
+            .mobile-menu-btn { display: none; }
+        }
+
+        .nav-link {
+            font-weight: 600;
+            color: var(--verde-oscuro);
+            font-size: 1.1rem;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: var(--sp-md);
+            align-items: center;
+        }
+
+        .cart-icon-wrapper {
+            position: relative;
+            color: var(--verde-oscuro);
+            font-size: 1.5rem;
+            text-decoration: none;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -10px;
+            background-color: var(--error);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: bold;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* HERO SECTION */
+        .hero {
+            position: relative;
+            background: url('./assets/images/hero-bg.jpg') center/cover no-repeat;
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            padding: var(--sp-2xl) 0;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to right, rgba(26, 107, 46, 0.9) 0%, rgba(26, 107, 46, 0.4) 100%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            color: var(--blanco);
+            max-width: 600px;
+        }
+
+        .hero h2 {
+            color: var(--blanco);
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            margin-bottom: var(--sp-md);
+            text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .hero p {
+            color: var(--gris-claro);
+            font-size: 1.25rem;
+            margin-bottom: var(--sp-xl);
+            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .hero-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--sp-md);
+        }
+
+        /* HISTORIA / NOSOTROS */
+        .history-section {
+            background-color: var(--gris-claro);
+            text-align: center;
+        }
+        
+        .history-box {
+            background: white;
+            padding: var(--sp-xl);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .history-box::before {
+            content: '\f10d';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--amarillo);
+            color: var(--verde-oscuro);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            border: 4px solid var(--gris-claro);
+        }
+
+        .history-box p {
+            font-size: 1.25rem;
+            color: var(--texto-principal);
+            font-style: italic;
+            margin-bottom: 0;
+            line-height: 1.6;
+        }
+
+        /* CATEGORÍAS GRID */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: var(--sp-md);
+            margin-top: var(--sp-xl);
+        }
+
+        @media (min-width: 768px) {
+            .categories-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+        }
+
+        .category-card {
+            background: var(--blanco);
+            border: 2px solid var(--gris-claro);
+            border-radius: var(--radius-md);
+            padding: var(--sp-lg);
+            text-align: center;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--sp-sm);
+            text-decoration: none;
+            color: var(--verde-oscuro);
+        }
+
+        .category-card:hover {
+            border-color: var(--verde-claro);
+            background: var(--gris-claro);
+            transform: translateY(-5px);
+        }
+
+        .category-icon {
+            font-size: 3rem;
+        }
+
+        .category-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        /* CONTEGRAL PROMO */
+        .contegral-promo {
+            background: linear-gradient(135deg, var(--verde-oscuro) 0%, var(--verde-medio) 100%);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: var(--sp-2xl);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-top: var(--sp-3xl);
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contegral-promo h2 { color: var(--amarillo); }
+        .contegral-promo p { color: white; font-size: 1.2rem; }
+
+        /* FOOTER */
+        .site-footer {
+            background-color: var(--texto-principal);
+            color: white;
+            padding: var(--sp-2xl) 0 var(--sp-md);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--sp-xl);
+            margin-bottom: var(--sp-xl);
+        }
+
+        @media (min-width: 768px) {
+            .footer-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        .footer-title {
+            color: var(--amarillo);
+            font-size: 1.2rem;
+            margin-bottom: var(--sp-md);
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: var(--sp-sm);
+        }
+
+        .footer-links a { color: var(--gris-medio); transition: color 0.2s; }
+        .footer-links a:hover { color: var(--amarillo); }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: var(--sp-md);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: var(--gris-medio);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CABECERA -->
+    <header class="site-header">
+        <div class="header-container">
+            <a href="index.html" class="header-logo fade-in">
+                <!-- Usando icono como placeholder temporal, usuario reemplazará por logo real -->
+                <i class="fa-solid fa-seedling" style="color: var(--verde-oscuro); font-size: 2rem;"></i>
+                <h1><span class="mil">Mil</span><span class="agro">Agro</span></h1>
+            </a>
+
+            <nav class="desktop-nav fade-in delay-1">
+                <a href="index.html" class="nav-link active">Inicio</a>
+                <a href="#nosotros" class="nav-link">Nosotros</a>
+                <a href="./pages/catalogo.html" class="nav-link">Catálogo</a>
+                <a href="./pages/delivery.html" class="nav-link">Domicilios</a>
+                <a href="./pages/contacto.html" class="nav-link">Contacto</a>
+            </nav>
+
+            <div class="header-actions fade-in delay-2">
+                <a href="./pages/carrito.html" class="cart-icon-wrapper" aria-label="Ir al carrito">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-badge" id="cart-counter">0</span>
+                </a>
+                <a href="./pages/login.html" class="btn btn-outline btn-sm desktop-nav" id="btnAuthGlobal" style="display:inline-flex;">
+                    <i class="fa-solid fa-user"></i> Ingresar
+                </a>
+                <button class="btn btn-outline mobile-menu-btn" style="border:none; font-size:1.5rem;">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero fade-in">
+        <div class="main-container">
+            <div class="hero-content">
+                <h2>Los mejores alimentos para animales están en MilAgro</h2>
+                <p>Encuentra todo para el cuidado y nutrición de tus mascotas y animales de granja, además de insumos agropecuarios de la mejor calidad en Montería.</p>
+                <div class="hero-buttons">
+                    <a href="./pages/catalogo.html" class="btn btn-primary">
+                        <i class="fa-solid fa-store"></i> Ver Productos
+                    </a>
+                    <a href="https://wa.me/573105913506" target="_blank" class="btn btn-whatsapp">
+                        <i class="fa-brands fa-whatsapp"></i> Pedir por WhatsApp
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- HISTORIA / NOSOTROS -->
+    <section id="nosotros" class="history-section fade-in">
+        <div class="main-container">
+            <div class="history-box">
+                <h3 class="color-verde text-center" style="margin-bottom: 1rem;">Nuestra Historia</h3>
+                <p>"MilAgro nació del amor por el campo y los animales. Somos una familia cordobesa que entendió que el campesino colombiano merece los mejores productos para cuidar sus animales y su tierra. En Montería, hemos construido un lugar donde se habla el mismo idioma del campo: honestidad, confianza y calidad. Nuestro nombre lo dice todo — 'Mil' posibilidades, 'Agro' con el corazón en la tierra."</p>
+                <br>
+                <strong>— Familia MilAgro CS S.A.S</strong>
+            </div>
+        </div>
+    </section>
+
+    <!-- CATEGORÍAS PRINCIPALES -->
+    <section id="categorias" class="fade-in">
+        <div class="main-container">
+            <h2 class="text-center">¿Qué estás buscando hoy?</h2>
+            <p class="text-center">Explora nuestro catálogo completo por tipo de animal o necesidad.</p>
+            
+            <div class="categories-grid">
+                <a href="./pages/catalogo.html?cat=mascotas" class="category-card delay-1">
+                    <span class="category-icon">🐕🐈</span>
+                    <span class="category-name">Mascotas</span>
+                </a>
+                <a href="./pages/catalogo.html?cat=bovinos" class="category-card delay-2">
+                    <span class="category-icon">🐄</span>
+                    <span class="category-name">Bovinos</span>
+                </a>
+                <a href="./pages/catalogo.html?cat=aves" class="category-card delay-3">
+                    <span class="category-icon">🐔</span>
+                    <span class="category-name">Aves</span>
+                </a>
+                <a href="./pages/catalogo.html?cat=porcinos" class="category-card delay-4">
+                    <span class="category-icon">🐖</span>
+                    <span class="category-name">Porcinos</span>
+                </a>
+                <a href="./pages/catalogo.html?cat=equinos" class="category-card delay-1">
+                    <span class="category-icon">🐎</span>
+                    <span class="category-name">Equinos</span>
+                </a>
+                <a href="./pages/catalogo.html?cat=peces" class="category-card delay-2">
+                    <span class="category-icon">🐟</span>
+                    <span class="category-name">Peces</span>
+                </a>
+                <a href="./pages/catalogo.html?cat=medicamentos_veterinarios" class="category-card delay-3">
+                    <span class="category-icon">💊</span>
+                    <span class="category-name">Medicamentos Veterinarios</span>
+                </a>
+                <a href="./pages/catalogo.html?cat=herramientas_agricolas" class="category-card delay-4">
+                    <span class="category-icon">🔧</span>
+                    <span class="category-name">Herramientas Agrícolas</span>
+                </a>
+                <a href="./pages/catalogo.html?cat=plaguicidas" class="category-card delay-1">
+                    <span class="category-icon">🧪</span>
+                    <span class="category-name">Plaguicidas</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA ENTREGAS Y DELIVERY -->
+    <section class="history-section fade-in">
+        <div class="main-container text-center">
+            <h2 class="color-verde">Llevamos el campo a tu puerta 🏍️</h2>
+            <p>Servicio de domicilio en el Barrio Villa Caribe, toda Montería y alrededores.</p>
+            <a href="./pages/delivery.html" class="btn btn-outline" style="margin-top:1rem;">Ver zonas de cobertura</a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="main-container">
+            <div class="footer-grid">
+                <div>
+                    <h3 style="color:white; display:flex; gap:10px;"><span class="mil">Mil</span><span class="agro" style="color:var(--verde-claro);">Agro</span></h3>
+                    <p style="color:var(--gris-medio);">Los mejores alimentos para animales están en MilAgro.</p>
+                    <div style="display:flex; gap:15px; font-size:1.5rem;">
+                        <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                        <a href="https://www.instagram.com/milagro_cs_sas?igsh=MWh1NjdkN2R1OTl5aA==" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="https://wa.me/573105913506" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="footer-title">Enlaces Rápidos</h4>
+                    <div class="footer-links">
+                        <a href="./pages/catalogo.html">Catálogo Completo</a>
+                        <a href="./pages/delivery.html">Domicilios y Envíos</a>
+                        <a href="./pages/login.html">Mi Cuenta / Puntos</a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="footer-title">Contacto</h4>
+                    <div class="footer-links">
+                        <a href="https://wa.me/573105913506"><i class="fa-solid fa-phone"></i> +57 310 5913506</a>
+                        <span style="color:var(--gris-medio);"><i class="fa-solid fa-location-dot"></i> Calle 29 # 39-82<br>Barrio Villa Caribe<br>Montería, Colombia</span>
+                        <span style="color:var(--gris-medio);"><i class="fa-solid fa-clock"></i> Lunes a Viernes de 7:00 am a 5:30 pm<br>y Sábados de 7:00 am a 3:00 pm<br>(Jornada continua)</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2026 MilAgro CS S.A.S. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- BOTÓN WHATSAPP FLOTANTE -->
+    <a href="https://wa.me/573105913506" class="fab-whatsapp" target="_blank" aria-label="Escríbenos por WhatsApp">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <!-- SCRIPTS -->
+    <script src="./js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cartCounter = document.getElementById('cart-counter');
+            let cart = JSON.parse(localStorage.getItem('milagro_cart')) || [];
+            cartCounter.textContent = cart.reduce((total, item) => total + item.quantity, 0);
+        });
+    </script>
+</body>
+</html>

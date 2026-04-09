@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin | MilAgro</title>
+    
+    <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body { background-color: var(--gris-claro); display: flex; min-height: 100vh; margin: 0; }
+        
+        /* SIDEBAR ADMIN */
+        .admin-sidebar {
+            width: 250px;
+            background-color: var(--verde-oscuro);
+            color: white;
+            padding: var(--sp-xl) var(--sp-md);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+        }
+
+        .sidebar-logo {
+            text-align: center;
+            margin-bottom: var(--sp-2xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            color: white;
+            text-decoration: none;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 20px;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            border-radius: var(--radius-md);
+            margin-bottom: 5px;
+            transition: all 0.2s;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background-color: var(--verde-medio);
+            color: white;
+        }
+
+        /* MAIN CONTENT */
+        .admin-main {
+            flex-grow: 1;
+            margin-left: 250px;
+            padding: var(--sp-xl);
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--sp-2xl);
+            background: white;
+            padding: var(--sp-lg);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* KPIs */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--sp-lg);
+            margin-bottom: var(--sp-xl);
+        }
+
+        .kpi-card {
+            background: white;
+            padding: var(--sp-lg);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            border-left: 5px solid var(--amarillo);
+        }
+
+        .kpi-title { font-size: 0.9rem; color: var(--texto-secundario); font-weight: 600; text-transform: uppercase; }
+        .kpi-val { font-size: 2rem; font-weight: 800; color: var(--verde-oscuro); margin-top: 10px; }
+
+        /* CHARTS CONTAINER */
+        .charts-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: var(--sp-lg);
+        }
+
+        .chart-box {
+            background: white;
+            padding: var(--sp-lg);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+    </style>
+</head>
+<body>
+
+    <script src="../../js/auth.js"></script>
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <a href="../../index.html" class="sidebar-logo">
+            <i class="fa-solid fa-seedling"></i>
+            <span style="font-weight:bold;">MilAgro</span>
+        </a>
+
+        <div class="sidebar-menu">
+            <a href="dashboard.html" class="active"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+            <a href="pos.html"><i class="fa-solid fa-cash-register"></i> Punto de Venta</a>
+            <a href="inventario.html"><i class="fa-solid fa-boxes-stacked"></i> Inventario</a>
+            <a href="pedidos.html"><i class="fa-solid fa-truck-fast"></i> Pedidos Web</a>
+            <a href="clientes.html"><i class="fa-solid fa-users"></i> Clientes (CRM)</a>
+            <a href="reportes.html"><i class="fa-solid fa-file-invoice-dollar"></i> Reportes</a>
+            <a href="configuracion.html"><i class="fa-solid fa-gear"></i> Configuración</a>
+        </div>
+
+        <div style="margin-top:auto;">
+            <button class="btn btn-outline" onclick="window.handleLogout()" style="width:100%; border-color:white; color:white;"><i class="fa-solid fa-power-off"></i> Cerrar Sesión</button>
+        </div>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="admin-main">
+        <header class="admin-header">
+            <div>
+                <h2 style="margin:0;">Dashboard General</h2>
+                <p style="margin:0; color:var(--texto-secundario);">Resumen de operaciones de hoy.</p>
+            </div>
+            <div style="display:flex; align-items:center; gap:15px;">
+                <span style="font-weight:bold;"><i class="fa-regular fa-clock"></i> <span id="currentDate">--</span></span>
+                <img src="../../assets/images/categorias/mascotas.jpg" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
+            </div>
+        </header>
+
+        <!-- KPIS -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <span class="kpi-title">Ventas Hoy</span>
+                <div class="kpi-val">$1'250.000</div>
+            </div>
+            <div class="kpi-card" style="border-color:var(--verde-medio);">
+                <span class="kpi-title">Pedidos Domicilio</span>
+                <div class="kpi-val">12</div>
+            </div>
+            <div class="kpi-card" style="border-color:var(--error);">
+                <span class="kpi-title">Stock Bajo</span>
+                <div class="kpi-val" style="color:var(--error);">8 Prods</div>
+            </div>
+            <div class="kpi-card" style="border-color:#25D366;">
+                <span class="kpi-title">Nuevos Clientes (WP)</span>
+                <div class="kpi-val" style="color:#25D366;">5</div>
+            </div>
+        </div>
+
+        <!-- CHARTS -->
+        <div class="charts-container">
+            <div class="chart-box">
+                <h3 style="margin-bottom:1rem; color:var(--verde-oscuro);">Ventas de la Semana</h3>
+                <canvas id="salesChart" height="100"></canvas>
+            </div>
+            
+            <div class="chart-box">
+                <h3 style="margin-bottom:1rem; color:var(--verde-oscuro);">Alertas de Inventario</h3>
+                <ul id="alertList" style="list-style:none; padding:0;">
+                    <!-- JS fills this -->
+                    <li style="padding:10px 0; border-bottom:1px solid #eee; display:flex; justify-content:space-between;">
+                        <span>Contegral Cerdos Cría</span>
+                        <span style="color:var(--error); font-weight:bold;">2 unds</span>
+                    </li>
+                    <li style="padding:10px 0; border-bottom:1px solid #eee; display:flex; justify-content:space-between;">
+                        <span>Fumigadora Espalda 16L</span>
+                        <span style="color:var(--error); font-weight:bold;">Agostado</span>
+                    </li>
+                </ul>
+                <a href="inventario.html" style="color:var(--amarillo); font-weight:bold; display:block; text-align:center; margin-top:1rem;">Gestionar Inventario →</a>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/utils.js"></script>
+    <script>
+        // Fecha actual
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('es-CO');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const orders = JSON.parse(localStorage.getItem('milagro_db_orders')) || [];
+            
+            // Ventas de hoy
+            const today = new Date().toDateString();
+            const todayOrders = orders.filter(o => new Date(o.date).toDateString() === today);
+            const totalToday = todayOrders.reduce((sum, o) => sum + o.total, 0);
+
+            // Pedidos Totales / Pendientes
+            const pendingOrders = orders.filter(o => o.status !== 'delivered');
+
+            // Set variables en DOM
+            document.querySelector('.kpi-grid').innerHTML = `
+                <div class="kpi-card">
+                    <span class="kpi-title">Ventas Hoy</span>
+                    <div class="kpi-val">${formatCOP(totalToday)}</div>
+                </div>
+                <div class="kpi-card" style="border-color:var(--verde-medio);">
+                    <span class="kpi-title">Órdenes Pendientes</span>
+                    <div class="kpi-val">${pendingOrders.length}</div>
+                </div>
+                <div class="kpi-card" style="border-color:var(--verde-oscuro);">
+                    <span class="kpi-title">Pedidos Totales Históricos</span>
+                    <div class="kpi-val">${orders.length}</div>
+                </div>
+            `;
+
+            // Config Chart.js (Ventas Últimos 7 días)
+            const last7Days = [];
+            const salesPerDay = [];
+            
+            for (let i = 6; i >= 0; i--) {
+                const d = new Date();
+                d.setDate(d.getDate() - i);
+                last7Days.push(d.toLocaleDateString('es-CO', { weekday: 'short' }));
+                
+                const daySum = orders.filter(o => new Date(o.date).toDateString() === d.toDateString())
+                                     .reduce((s, o) => s + o.total, 0);
+                salesPerDay.push(daySum);
+            }
+
+            const ctx = document.getElementById('salesChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: last7Days,
+                    datasets: [{
+                        label: 'Ventas Diarias (COP)',
+                        data: salesPerDay,
+                        borderColor: '#1a6b2e',
+                        backgroundColor: 'rgba(26, 107, 46, 0.1)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+
+            // Alertas Inventario
+            const dbinv = JSON.parse(localStorage.getItem('milagro_db_products')) || [];
+            const alerts = dbinv.filter(p => parseInt(p.stock) < 10);
+            
+            const alertList = document.getElementById('alertList');
+            if(alerts.length === 0) {
+                alertList.innerHTML = '<li style="padding:10px 0; display:flex; justify-content:center; color:var(--gris-medio);">No hay alertas de inventario</li>';
+            } else {
+                alertList.innerHTML = alerts.slice(0,5).map(p => `
+                    <li style="padding:10px 0; border-bottom:1px solid #eee; display:flex; justify-content:space-between;">
+                        <span>${p.name}</span>
+                        <span style="color:var(--error); font-weight:bold;">${p.stock} unds</span>
+                    </li>
+                `).join('');
+            }
+
+            // Role Filtering - ocultar opciones para cajero
+            const user = getCurrentUser();
+            if(user && user.role === 'cajero') {
+                document.querySelectorAll('a[href="inventario.html"], a[href="clientes.html"], a[href="reportes.html"], a[href="configuracion.html"]').forEach(el => el.style.display = 'none');
+            }
+        });
+    </script>
+</body>
+</html>
+

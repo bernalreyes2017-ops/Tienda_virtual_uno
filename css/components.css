@@ -1,0 +1,241 @@
+/* 
+ * MILAGRO - Componentes (Botones, Cards, Inputs, Modales)
+ * Diseñado Mobile-First para audiencias que priorizan claridad funcional.
+ */
+
+/* ==========================================================================
+   BOTONES (Grandes y claros para fácil click on móviles)
+   ========================================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-sm);
+  padding: 1rem 1.5rem;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 1.125rem;
+  border: none;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  line-height: 1;
+  text-align: center;
+}
+
+/* Primario: Acción principal orientada a compras o atención urgente */
+.btn-primary {
+  background-color: var(--amarillo);
+  color: var(--verde-oscuro);
+  box-shadow: 0 4px 15px rgba(245, 197, 24, 0.4);
+}
+
+.btn-primary:hover, .btn-primary:active {
+  background-color: #ffd84d;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(245, 197, 24, 0.5);
+}
+
+/* Secundario: Navegación y ver más */
+.btn-secondary {
+  background-color: var(--verde-oscuro);
+  color: var(--blanco);
+}
+
+.btn-secondary:hover, .btn-secondary:active {
+  background-color: var(--verde-medio);
+  transform: translateY(-2px);
+}
+
+/* Outline: Acciones de menor prioridad */
+.btn-outline {
+  background-color: transparent;
+  color: var(--verde-oscuro);
+  border: 2px solid var(--verde-oscuro);
+}
+
+.btn-outline:hover, .btn-outline:active {
+  background-color: var(--verde-oscuro);
+  color: var(--blanco);
+}
+
+/* WhatsApp Botón Específico */
+.btn-whatsapp {
+  background-color: #25D366;
+  color: white;
+  box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+}
+
+.btn-whatsapp:hover, .btn-whatsapp:active {
+  background-color: #1ebe58;
+  transform: translateY(-2px);
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: var(--radius-md);
+}
+
+/* ==========================================================================
+   CARDS DE PRODUCTOS Y CATEGORÍAS
+   ========================================================================== */
+.card {
+  background-color: var(--blanco);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid var(--gris-claro);
+  display: flex;
+  flex-direction: column;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Card Producto Específico */
+.product-card {
+  height: 100%;
+}
+
+.product-img-wrapper {
+  position: relative;
+  padding-top: 100%; /* Ratio 1:1 */
+  overflow: hidden;
+  background-color: var(--gris-claro);
+}
+
+.product-img-wrapper img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-content {
+  padding: var(--sp-md);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.product-category {
+  font-size: 0.875rem;
+  color: var(--verde-claro);
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: var(--sp-xs);
+}
+
+.product-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-bottom: var(--sp-sm);
+  color: var(--texto-principal);
+  /* Truncate a 2 líneas */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+}
+
+.product-price {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--verde-oscuro);
+  margin-top: auto; /* Empujar hacia abajo */
+  margin-bottom: var(--sp-md);
+}
+
+/* Tag/Badge Flotante */
+.badge {
+  position: absolute;
+  top: var(--sp-sm);
+  left: var(--sp-sm);
+  background-color: var(--amarillo-calido);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: 700;
+  z-index: 2;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ==========================================================================
+   FORMULARIOS E INPUTS
+   ========================================================================== */
+.form-group {
+  margin-bottom: var(--sp-md);
+}
+
+.form-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: var(--sp-xs);
+  color: var(--verde-oscuro);
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 2px solid var(--gris-medio);
+  border-radius: var(--radius-md);
+  background-color: var(--blanco);
+  transition: border-color 0.3s ease;
+  font-size: 1rem;
+  color: var(--texto-principal);
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--verde-medio);
+  box-shadow: 0 0 0 3px rgba(45, 138, 62, 0.1);
+}
+
+/* ==========================================================================
+   BOTÓN FLOTANTE WHATSAPP (Global)
+   ========================================================================== */
+.fab-whatsapp {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 65px;
+  height: 65px;
+  background-color: #25D366;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 35px;
+  box-shadow: var(--shadow-floating);
+  z-index: 1000;
+  transition: transform 0.3s;
+}
+
+.fab-whatsapp:hover {
+  transform: scale(1.1);
+}
+
+/* Animación del botón flotante (pulso) */
+@keyframes pulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+  70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+}
+
+.fab-whatsapp {
+  animation: pulse 2s infinite;
+}

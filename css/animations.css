@@ -1,0 +1,62 @@
+/*
+ * MILAGRO - Micro animaciones
+ * Suaves, pero notorias, sin sobrecargar dispositivos de baja gama.
+ */
+
+/* Fade-in genérico */
+.fade-in {
+  animation: fadeIn 0.8s ease forwards;
+  opacity: 0;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Delay utilerities para cards */
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+
+/* Animación perezosa para carga de imagen (blur up mockup) */
+.lazy-load {
+  filter: blur(10px);
+  transition: filter 0.5s ease;
+}
+
+.lazy-load.loaded {
+  filter: blur(0);
+}
+
+/* Efecto hover suave para enlaces de navegación */
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 3px;
+  bottom: -4px;
+  left: 0;
+  background-color: var(--amarillo);
+  transition: width 0.3s ease;
+  border-radius: 2px;
+}
+
+.nav-link:hover::after, .nav-link.active::after {
+  width: 100%;
+}
+
+/* Spin animation for loading states */
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

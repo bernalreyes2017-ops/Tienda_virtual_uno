@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes y CRM | Admin MilAgro</title>
+    
+    <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body { background-color: var(--gris-claro); display: flex; min-height: 100vh; margin: 0; }
+        .admin-sidebar { width: 250px; background-color: var(--verde-oscuro); color: white; padding: var(--sp-xl) var(--sp-md); display: flex; flex-direction: column; position: fixed; height: 100vh; }
+        .sidebar-logo { text-align: center; margin-bottom: var(--sp-2xl); display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 1.5rem; color: white; text-decoration: none; }
+        .sidebar-menu a { display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: rgba(255,255,255,0.8); text-decoration: none; border-radius: var(--radius-md); margin-bottom: 5px; transition: all 0.2s; }
+        .sidebar-menu a:hover, .sidebar-menu a.active { background-color: var(--verde-medio); color: white; }
+        .admin-main { flex-grow: 1; margin-left: 250px; padding: var(--sp-xl); }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--sp-lg); background: white; padding: var(--sp-lg); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); }
+        
+        .table-container { background: white; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 15px; border-bottom: 1px solid #eee; }
+        th { background-color: var(--verde-oscuro); color: white; font-weight: 600; }
+        tr:hover { background-color: var(--gris-claro); }
+
+        .btn-redeem { background-color: var(--amarillo); border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; color: var(--verde-oscuro); }
+        .btn-redeem:hover { background-color: #e6b100; }
+        
+        /* Modal */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: var(--sp-xl); border-radius: var(--radius-lg); width: 100%; max-width: 400px; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <script src="../../js/auth.js"></script>
+
+    <aside class="admin-sidebar">
+        <a href="../../index.html" class="sidebar-logo"><i class="fa-solid fa-seedling"></i><span style="font-weight:bold;">MilAgro</span></a>
+        <div class="sidebar-menu">
+            <a href="dashboard.html"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+            <a href="pos.html"><i class="fa-solid fa-cash-register"></i> Punto de Venta</a>
+            <a href="inventario.html"><i class="fa-solid fa-boxes-stacked"></i> Inventario</a>
+            <a href="pedidos.html"><i class="fa-solid fa-truck-fast"></i> Pedidos Web</a>
+            <a href="clientes.html" class="active"><i class="fa-solid fa-users"></i> Clientes (CRM)</a>
+            <a href="reportes.html"><i class="fa-solid fa-file-invoice-dollar"></i> Reportes</a>
+            <a href="configuracion.html"><i class="fa-solid fa-gear"></i> Configuración</a>
+        </div>
+        <div style="margin-top:auto;">
+            <button class="btn btn-outline" onclick="window.handleLogout()" style="width:100%; border-color:white; color:white;"><i class="fa-solid fa-power-off"></i> Cerrar Sesión</button>
+        </div>
+    </aside>
+
+    <main class="admin-main">
+        <header class="admin-header">
+            <div>
+                <h2 style="margin:0;">Clientes y CRM</h2>
+                <p style="margin:0; color:var(--texto-secundario);">Administra puntos de fidelización de tus clientes.</p>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <input type="text" id="searchClient" class="form-control" placeholder="Buscar por cédula..." onkeyup="renderClients()">
+            </div>
+        </header>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Cédula</th>
+                        <th>Nombre</th>
+                        <th>Contacto</th>
+                        <th>Puntos Disp.</th>
+                        <th>Equivalencia ($20/pt)</th>
+                        <th>Acciones CRM</th>
+                    </tr>
+                </thead>
+                <tbody id="clientsTable">
+                    <!-- Dinámico -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Modal Redimir Puntos -->
+    <div class="modal-overlay" id="redeemModal">
+        <div class="modal-content fade-in">
+            <h2 class="color-verde" style="margin-bottom: 20px;">Redimir Puntos</h2>
+            <p>Cliente: <strong id="rdName"></strong></p>
+            <p>Puntos Actuales: <strong id="rdPoints" class="color-verde"></strong></p>
+            
+            <div class="form-group" style="text-align:left; margin-top:1.5rem;">
+                <label class="form-label">¿Cuántos puntos desea canjear ahora?</label>
+                <input type="number" id="rdAmount" class="form-control" min="1" required>
+                <small style="color:var(--gris-medio); display:block; margin-top:5px;">El descuento será: <span id="rdEquivalent" style="font-weight:bold; color:var(--amarillo-calido);">$0</span></small>
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+                <button type="button" class="btn btn-outline" onclick="closeRedeemModal()">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="confirmRedeem()">Aplicar Canje</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../js/utils.js"></script>
+    <script>
+        let selectedCedula = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderClients();
+
+            // Actualizar equivalente en tiempo real
+            document.getElementById('rdAmount').addEventListener('input', (e) => {
+                const val = parseInt(e.target.value) || 0;
+                document.getElementById('rdEquivalent').textContent = formatCOP(val * 20);
+            });
+        });
+
+        const renderClients = () => {
+            const users = JSON.parse(localStorage.getItem('milagro_db_users')) || [];
+            // Filtrar solo rol cliente
+            let clients = users.filter(u => u.role === 'client');
+            
+            const search = document.getElementById('searchClient').value.toLowerCase();
+            if(search) {
+                clients = clients.filter(c => (c.cedula && c.cedula.includes(search)) || (c.name && c.name.toLowerCase().includes(search)));
+            }
+
+            const tbody = document.getElementById('clientsTable');
+            tbody.innerHTML = '';
+
+            if (clients.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:30px;">No hay clientes registrados con ese criterio.</td></tr>';
+                return;
+            }
+
+            clients.forEach(c => {
+                const tr = document.createElement('tr');
+                const pts = c.points || 0;
+                const eq = pts * 20;
+                tr.innerHTML = `
+                    <td><strong>${c.cedula || '--'}</strong></td>
+                    <td>${c.name}</td>
+                    <td>${c.phone}<br><small>${c.email || 'Sin correo'}</small></td>
+                    <td><span style="font-size:1.1rem; color:var(--verde-oscuro); font-weight:bold;"><i class="fa-solid fa-star"></i> ${pts}</span></td>
+                    <td>${formatCOP(eq)}</td>
+                    <td style="display:flex; gap:5px; flex-wrap:wrap;">
+                        <button class="btn btn-primary btn-sm" onclick="openAddPoints('${c.cedula}', '${c.name}', '${c.phone}')" style="padding:5px;">
+                            <i class="fa-solid fa-plus"></i> Puntos
+                        </button>
+                        <button class="btn-redeem" onclick="openRedeemModal('${c.cedula}', '${c.name}', ${pts})" ${pts <= 0 ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''} style="padding:5px;">
+                            <i class="fa-solid fa-gift"></i> Canjear
+                        </button>
+                        <button class="btn btn-outline btn-sm" onclick="openEditModal('${c.cedula}', '${c.name}', '${c.phone}', '${c.email || ''}')" style="padding:5px;">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        };
+
+        const openRedeemModal = (cedula, name, points) => {
+            selectedCedula = cedula;
+            document.getElementById('rdName').textContent = name;
+            document.getElementById('rdPoints').textContent = points;
+            document.getElementById('rdAmount').max = points;
+            document.getElementById('rdAmount').value = '';
+            document.getElementById('rdEquivalent').textContent = '$0';
+            document.getElementById('redeemModal').style.display = 'flex';
+        };
+
+        const closeRedeemModal = () => {
+            selectedCedula = null;
+            document.getElementById('redeemModal').style.display = 'none';
+        };
+
+        const confirmRedeem = () => {
+            const amountStr = document.getElementById('rdAmount').value;
+            const amount = parseInt(amountStr);
+            if(isNaN(amount) || amount <= 0) return alert('Ingresa un valor válido');
+            
+            const users = JSON.parse(localStorage.getItem('milagro_db_users')) || [];
+            const idx = users.findIndex(u => String(u.cedula) === String(selectedCedula));
+            
+            if(idx > -1) {
+                if(amount > users[idx].points) return alert('El cliente no tiene tantos puntos.');
+                users[idx].points -= amount;
+                localStorage.setItem('milagro_db_users', JSON.stringify(users));
+                alert(`¡Canje exitoso! Se restaron ${amount} puntos.\nDebes aplicar un descuento en caja de ${formatCOP(amount * 20)}`);
+                closeRedeemModal();
+                renderClients();
+            }
+        };
+
+        // --- AGREGAR PUNTOS ---
+        let targetPhone = "";
+        const openAddPoints = (cedula, name, phone) => {
+            const amount = prompt(`¿Cuánto fue el total de la compra física de ${name}?\nEl sistema dividirá esto por 1000 para asignarle puntos.`);
+            if(amount) {
+                const val = parseFloat(amount.replace(/[^0-9]/g, ''));
+                if(val && val > 0) {
+                    const pointsGained = Math.floor(val / 1000);
+                    
+                    const users = JSON.parse(localStorage.getItem('milagro_db_users')) || [];
+                    const idx = users.findIndex(u => String(u.cedula) === String(cedula));
+                    if(idx > -1) {
+                        users[idx].points = (users[idx].points || 0) + pointsGained;
+                        localStorage.setItem('milagro_db_users', JSON.stringify(users));
+                        renderClients();
+
+                        // WhatsApp Bridge
+                        const waMsg = `¡Hola ${name}! 🌟\nGracias por tu compra en MilAgro CS S.A.S.\nHemos cargado ${pointsGained} puntos a tu cuenta.\n\nActualmente tienes un total de ${users[idx].points} puntos disponibles para canjear en tus próximas compras.`;
+                        const waUrl = `https://wa.me/57${phone}?text=${encodeURIComponent(waMsg)}`;
+                        
+                        alert(`¡Puntos cargados con éxito! Se abrirá WhatsApp para notificarle.`);
+                        window.open(waUrl, '_blank');
+                    }
+                }
+            }
+        };
+
+        // --- EDITAR CLIENTE ---
+        const openEditModal = (cedula, name, phone, email) => {
+            const newPhone = prompt(`Editar Celular de ${name}:`, phone);
+            if(newPhone !== null) {
+                const newEmail = prompt(`Editar Correo de ${name}:`, email);
+                if(newEmail !== null) {
+                    const users = JSON.parse(localStorage.getItem('milagro_db_users')) || [];
+                    const idx = users.findIndex(u => String(u.cedula) === String(cedula));
+                    if(idx > -1) {
+                        users[idx].phone = newPhone;
+                        users[idx].email = newEmail;
+                        localStorage.setItem('milagro_db_users', JSON.stringify(users));
+                        renderClients();
+                    }
+                }
+            }
+        };
+    </script>
+</body>
+</html>

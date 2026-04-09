@@ -1,0 +1,157 @@
+/* 
+ * MILAGRO CS S.A.S - Design System y Estilos Globales
+ * Autor: Generado para tiendas agropecuarias
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap');
+
+:root {
+  /* Paleta de Colores de Marca */
+  --verde-oscuro: #1a6b2e;
+  --verde-medio: #2d8a3e;
+  --verde-claro: #7ec15a;
+  
+  --amarillo: #f5c518;
+  --amarillo-calido: #ff8c00;
+  
+  --tierra: #8b5e3c;
+  
+  /* Sistema de grises y fondos */
+  --blanco: #ffffff;
+  --blanco-fondo: #fcfdfc;
+  --gris-claro: #f0f4f0; /* Fondo tipo campo rural */
+  --gris-medio: #c2cfc5;
+  --gris-oscuro: #5a665c;
+  --texto-principal: #1c2b1e;
+  --texto-secundario: #4b5a4d;
+  
+  /* Utilidades semánticas */
+  --error: #d93838;
+  --exito: #2d8a3e;
+  --alerta: #ffb800;
+
+  /* Espaciado Mobile First */
+  --sp-xs: 0.25rem;  /* 4px */
+  --sp-sm: 0.5rem;   /* 8px */
+  --sp-md: 1rem;     /* 16px */
+  --sp-lg: 1.5rem;   /* 24px */
+  --sp-xl: 2rem;     /* 32px */
+  --sp-2xl: 3rem;    /* 48px */
+  --sp-3xl: 5rem;    /* 80px */
+  
+  /* Radios - Botones amigables */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-pill: 50px;
+  
+  /* Sombras y elevaciones */
+  --shadow-sm: 0 2px 4px rgba(26, 107, 46, 0.05);
+  --shadow-md: 0 4px 12px rgba(26, 107, 46, 0.08);
+  --shadow-lg: 0 8px 24px rgba(26, 107, 46, 0.12);
+  --shadow-floating: 0 10px 25px rgba(245, 197, 24, 0.4);
+}
+
+/* ==========================================================================
+   RESET BÁSICO (Box Sizing y Márgenes)
+   ========================================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  color: var(--texto-principal);
+  background-color: var(--blanco-fondo);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+input, button, textarea, select {
+  font: inherit;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ==========================================================================
+   TIPOGRAFÍA MODERNA
+   ========================================================================== */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--verde-oscuro);
+  overflow-wrap: break-word;
+}
+
+h1 {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+
+h3 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+h4 {
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+}
+
+p {
+  color: var(--texto-secundario);
+  margin-bottom: var(--sp-md);
+}
+
+.text-center { text-align: center; }
+.text-bold { font-weight: 700; }
+.text-semibold { font-weight: 600; }
+.text-light { color: var(--texto-secundario); }
+
+/* Clases de colores utilitarias */
+.color-verde { color: var(--verde-oscuro); }
+.color-amarillo { color: var(--amarillo); }
+.bg-verde-oscuro { background-color: var(--verde-oscuro); color: var(--blanco); }
+.bg-gris-campo { background-color: var(--gris-claro); }
+
+/* ==========================================================================
+   ESTRUCTURA DE PÁGINA (Layout)
+   ========================================================================== */
+.main-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--sp-md);
+  width: 100%;
+}
+
+section {
+  padding: var(--sp-3xl) 0;
+}
+
+@media (max-width: 768px) {
+  section {
+    padding: var(--sp-2xl) 0;
+  }
+}

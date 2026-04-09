@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Cuenta | MilAgro CS S.A.S</title>
+    
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .site-header { background-color: var(--blanco); box-shadow: var(--shadow-sm); position: sticky; top: 0; z-index: 100; }
+        .header-container { display: flex; align-items: center; justify-content: space-between; padding: 1rem; max-width: 1200px; margin: 0 auto; }
+        .header-logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; }
+        .header-logo h1 { font-size: 1.5rem; margin: 0; display: flex; }
+        .header-logo .mil { color: var(--amarillo); } .header-logo .agro { color: var(--verde-oscuro); }
+
+        .dashboard-container { max-width: 900px; margin: 0 auto; padding: var(--sp-2xl) var(--sp-md); }
+
+        .user-card { background: linear-gradient(135deg, var(--verde-oscuro) 0%, var(--verde-medio) 100%); color: white; padding: var(--sp-xl); border-radius: var(--radius-lg); display: flex; align-items: center; gap: var(--sp-lg); box-shadow: var(--shadow-lg); }
+        .user-avatar { font-size: 4rem; color: var(--amarillo); }
+        .points-box { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: var(--sp-md); border-radius: var(--radius-md); text-align: center; margin-left: auto; }
+        .points-box h2 { color: var(--amarillo); font-size: 2.5rem; margin: 0; }
+
+        .history-section { margin-top: var(--sp-xl); background: white; border-radius: var(--radius-lg); padding: var(--sp-xl); box-shadow: var(--shadow-sm); }
+        .order-item { border: 1px solid var(--gris-claro); border-radius: var(--radius-md); padding: var(--sp-md); margin-bottom: var(--sp-md); display: flex; justify-content: space-between; align-items: center; transition: all 0.3s; }
+        .order-item:hover { border-color: var(--verde-claro); background: var(--blanco-fondo); }
+        
+        .order-meta h4 { margin-bottom: 5px; color: var(--verde-oscuro); }
+        .order-meta span { color: var(--texto-secundario); font-size: 0.9rem; }
+    </style>
+</head>
+<body class="bg-gris-campo">
+
+    <header class="site-header">
+        <div class="header-container">
+            <a href="../index.html" class="header-logo">
+                <i class="fa-solid fa-seedling" style="color: var(--verde-oscuro); font-size: 1.5rem;"></i>
+                <h1><span class="mil">Mil</span><span class="agro">Agro</span></h1>
+            </a>
+            <div style="display:flex; gap:10px;">
+                <a href="catalogo.html" class="btn btn-outline btn-sm"><i class="fa-solid fa-store"></i> Comprar</a>
+                <button onclick="window.handleLogout()" class="btn btn-outline btn-sm">
+                    <i class="fa-solid fa-right-from-bracket"></i> Salir
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-container fade-in">
+        <div class="user-card">
+            <i class="fa-solid fa-circle-user user-avatar"></i>
+            <div>
+                <h2 id="accountName" style="color:white; margin-bottom: 5px;">Cargando...</h2>
+                <p id="accountLevel" style="margin:0; font-size:1.1rem;">Nivel: - </p>
+            </div>
+            <div class="points-box">
+                <p style="margin:0; text-transform:uppercase; font-size:0.8rem; letter-spacing:1px;">Tus Puntos</p>
+                <h2 id="accountPoints">0 pts</h2>
+            </div>
+        </div>
+
+        <div class="history-section">
+            <h3 class="color-verde" style="margin-bottom: 1.5rem;"><i class="fa-solid fa-box-open"></i> Mis Pedidos Recientes</h3>
+            <div id="ordersList">
+                <p style="text-align:center; padding: 2rem; color:var(--texto-secundario);">Cargando tu historial...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/utils.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userStr = localStorage.getItem('milagro_user');
+            if(!userStr) return;
+            
+            const user = JSON.parse(userStr);
+            
+            // Refrescar puntos desde la DB real
+            const usersDB = JSON.parse(localStorage.getItem('milagro_db_users')) || [];
+            const freshUser = usersDB.find(u => String(u.cedula) === String(user.cedula));
+            const currentPoints = freshUser ? freshUser.points : (user.points || 0);
+            
+            document.getElementById('accountName').textContent = user.name;
+            document.getElementById('accountPoints').textContent = currentPoints + ' pts';
+            
+            // Nivel basado en puntos
+            let nivel = 'Bronce 🥉';
+            if (currentPoints >= 500) nivel = 'Oro 🥇';
+            else if (currentPoints >= 200) nivel = 'Plata 🥈';
+            document.getElementById('accountLevel').textContent = `Nivel: ${nivel}`;
+            
+            // Actualizar sesión con puntos frescos
+            user.points = currentPoints;
+            localStorage.setItem('milagro_user', JSON.stringify(user));
+            
+            const ordersDB = JSON.parse(localStorage.getItem('milagro_db_orders')) || [];
+            
+            // Filtrar pedidos por celular O por nombre
+            const myOrders = ordersDB.filter(o => o.phone === user.phone || o.customer === user.name).reverse();
+
+            const container = document.getElementById('ordersList');
+            
+            if(myOrders.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align:center; padding: 2rem;">
+                        <i class="fa-solid fa-bag-shopping" style="font-size:3rem; color:var(--gris-claro); margin-bottom:1rem;"></i>
+                        <p style="color:var(--gris-medio);">No tienes pedidos recientes.</p>
+                        <a href="catalogo.html" class="btn btn-primary" style="margin-top:1rem;">Ir al Catálogo</a>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            myOrders.forEach(o => {
+                let statusBadge = '';
+                if(o.status === 'pending') statusBadge = '<span style="background:#fff3cd; color:#856404; padding:3px 8px; border-radius:10px; font-size:0.8rem;">Pendiente</span>';
+                if(o.status === 'prep') statusBadge = '<span style="background:#cce5ff; color:#004085; padding:3px 8px; border-radius:10px; font-size:0.8rem;">Preparando</span>';
+                if(o.status === 'sent') statusBadge = '<span style="background:#d4edda; color:#155724; padding:3px 8px; border-radius:10px; font-size:0.8rem;">En Camino</span>';
+                if(o.status === 'delivered') statusBadge = '<span style="background:#e2e3e5; color:#383d41; padding:3px 8px; border-radius:10px; font-size:0.8rem;">Entregado</span>';
+
+                html += `
+                    <div class="order-item">
+                        <div class="order-meta">
+                            <h4>${o.id} ${statusBadge}</h4>
+                            <span>Fecha: ${new Date(o.date).toLocaleDateString('es-CO')} | ${o.items.length} productos | <strong>${formatCOP(o.total)}</strong></span>
+                        </div>
+                        <a href="order-tracking.html?id=${o.id}" class="btn btn-outline btn-sm">Hacer Seguimiento</a>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        });
+    </script>
+</body>
+</html>

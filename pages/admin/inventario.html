@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario | Admin MilAgro</title>
+    
+    <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body { background-color: var(--gris-claro); display: flex; min-height: 100vh; margin: 0; }
+        
+        .admin-sidebar { width: 250px; background-color: var(--verde-oscuro); color: white; padding: var(--sp-xl) var(--sp-md); display: flex; flex-direction: column; position: fixed; height: 100vh; z-index: 100;}
+        .sidebar-logo { text-align: center; margin-bottom: var(--sp-2xl); display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 1.5rem; color: white; text-decoration: none; }
+        .sidebar-menu a { display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: rgba(255,255,255,0.8); text-decoration: none; border-radius: var(--radius-md); margin-bottom: 5px; transition: all 0.2s; }
+        .sidebar-menu a:hover, .sidebar-menu a.active { background-color: var(--verde-medio); color: white; }
+        
+        .admin-main { flex-grow: 1; margin-left: 250px; padding: var(--sp-xl); position: relative; }
+
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--sp-lg); background: white; padding: var(--sp-lg); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); }
+        
+        .toolbar { display: flex; justify-content: space-between; margin-bottom: var(--sp-md); gap: 10px;}
+        .search-box { display: flex; gap: 10px; flex-grow: 1; max-width: 500px; }
+        
+        .table-container { background: white; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 15px; border-bottom: 1px solid #eee; }
+        th { background-color: var(--verde-oscuro); color: white; font-weight: 600; }
+        tr:hover { background-color: var(--gris-claro); }
+        
+        .status-badge { padding: 4px 8px; border-radius: 5px; font-size: 0.8rem; font-weight: bold; }
+        .status-ok { background: #d4edda; color: #155724; }
+        .status-low { background: #fff3cd; color: #856404; }
+        .status-out { background: #f8d7da; color: #721c24; }
+
+        .action-btns button { border: none; background: none; cursor: pointer; font-size: 1.2rem; margin-right: 10px; }
+        .btn-edit { color: var(--amarillo-calido); }
+        .btn-delete { color: var(--error); }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: var(--sp-xl);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- AUTH GUARD SCRIPT INTERNO RAPIDO -->
+    <script src="../../js/auth.js"></script>
+
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar">
+        <a href="../../index.html" class="sidebar-logo"><i class="fa-solid fa-seedling"></i><span style="font-weight:bold;">MilAgro</span></a>
+        <div class="sidebar-menu">
+            <a href="dashboard.html"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+            <a href="pos.html"><i class="fa-solid fa-cash-register"></i> Punto de Venta</a>
+            <a href="inventario.html" class="active"><i class="fa-solid fa-boxes-stacked"></i> Inventario</a>
+            <a href="pedidos.html"><i class="fa-solid fa-truck-fast"></i> Pedidos Web</a>
+            <a href="clientes.html"><i class="fa-solid fa-users"></i> Clientes (CRM)</a>
+            <a href="reportes.html"><i class="fa-solid fa-file-invoice-dollar"></i> Reportes</a>
+            <a href="configuracion.html"><i class="fa-solid fa-gear"></i> Configuración</a>
+        </div>
+        <div style="margin-top:auto;">
+            <button class="btn btn-outline" onclick="window.handleLogout()" style="width:100%; border-color:white; color:white;"><i class="fa-solid fa-power-off"></i> Cerrar Sesión</button>
+        </div>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="admin-main">
+        <header class="admin-header">
+            <div>
+                <h2 style="margin:0;">Gestión de Inventario</h2>
+                <p style="margin:0; color:var(--texto-secundario);">Añade, edita o elimina productos dinámicamente.</p>
+            </div>
+            <button class="btn btn-primary" onclick="openProductModal()"><i class="fa-solid fa-plus"></i> Nuevo Producto</button>
+        </header>
+
+        <div class="toolbar">
+            <div class="search-box">
+                <input type="text" id="invSearch" class="form-control" placeholder="Buscar producto o código...">
+                <select class="form-control" id="invFilter" style="max-width: 150px;">
+                    <option value="all">Filtro: Todos</option>
+                    <option value="low">Stock Bajo</option>
+                    <option value="out">Agotados</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Código / Foto</th>
+                        <th>Producto</th>
+                        <th>Categoría</th>
+                        <th>Precio (COP)</th>
+                        <th>Stock</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="inventoryTable">
+                    <tr><td colspan="7" style="text-align:center; padding:30px;"><i class="fa-solid fa-spinner spin"></i> Cargando base de datos...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- MODAL PARA AGREGAR / EDITAR PRODUCTO -->
+    <div class="modal-overlay" id="productModal">
+        <div class="modal-content fade-in">
+            <h2 class="color-verde" id="modalTitle" style="margin-bottom: 20px;">Nuevo Producto</h2>
+            
+            <form id="productForm" onsubmit="handleSaveProduct(event)">
+                <input type="hidden" id="prodEditId">
+                <input type="hidden" id="prodBase64Image">
+
+                <div class="form-group">
+                    <label class="form-label">Nombre del Producto</label>
+                    <input type="text" id="prodName" class="form-control" required>
+                </div>
+
+                <div style="display:flex; gap:15px;">
+                    <div class="form-group" style="flex:1;">
+                        <label class="form-label">Categoría</label>
+                        <select id="prodCategory" class="form-control" required>
+                            <option value="mascotas">Mascotas</option>
+                            <option value="bovinos">Bovinos</option>
+                            <option value="aves">Aves</option>
+                            <option value="porcinos">Porcinos</option>
+                            <option value="equinos">Equinos</option>
+                            <option value="medicamentos_veterinarios">Medicamentos Veterinarios</option>
+                            <option value="herramientas_agricolas">Herramientas Agrícolas</option>
+                            <option value="plaguicidas">Plaguicidas</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                        <label class="form-label">Código (Ej: P005)</label>
+                        <input type="text" id="prodId" class="form-control" required>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:15px;">
+                    <div class="form-group" style="flex:1;">
+                        <label class="form-label">Precio</label>
+                        <input type="number" id="prodPrice" class="form-control" required>
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                        <label class="form-label">Stock Actual</label>
+                        <input type="number" id="prodStock" class="form-control" value="10" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Descripción</label>
+                    <textarea id="prodDesc" class="form-control" rows="2" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Foto del Producto (Opcional)</label>
+                    <input type="file" id="prodImageFile" accept="image/*" class="form-control" style="background:white; padding:5px;">
+                    <small style="color:var(--gris-medio);">Sube la foto desde tu dispositivo. Se guardará en la memoria.</small>
+                </div>
+
+                <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+                    <button type="button" class="btn btn-outline" onclick="closeProductModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Producto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN SCRIPTS -->
+    <script src="../../js/utils.js"></script>
+    <script src="../../js/inventory.js"></script>
+
+</body>
+</html>
