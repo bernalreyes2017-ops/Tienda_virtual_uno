@@ -18,14 +18,22 @@ window.generateInvoiceFromOrder = (order) => {
 };
 
 const _buildPDF = (order) => {
-    // Verificar que jsPDF esté disponible
-    if (typeof window.jspdf === 'undefined' && typeof jsPDF === 'undefined') {
-        alert('El módulo de PDF no está cargado aún. Por favor espera un momento y vuelve a intentarlo.');
-        return;
-    }
+    try {
+        let JSPDF_CLASS = null;
+        if (window.jspdf && window.jspdf.jsPDF) {
+            JSPDF_CLASS = window.jspdf.jsPDF;
+        } else if (typeof jsPDF !== 'undefined') {
+            JSPDF_CLASS = jsPDF;
+        } else if (window.jsPDF) {
+            JSPDF_CLASS = window.jsPDF;
+        }
 
-    const { jsPDF } = window.jspdf || { jsPDF: window.jsPDF };
-    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+        if (!JSPDF_CLASS) {
+            alert('El generador de PDF aún está cargando. Por favor, espera unos segundos y vuelve a intentar.');
+            return;
+        }
+
+        const doc = new JSPDF_CLASS({ unit: 'mm', format: 'a4' });
 
     // ---- Colores ----
     const VERDE = [44, 110, 55];
@@ -203,6 +211,11 @@ const _buildPDF = (order) => {
 
     // ---- GUARDAR ----
     doc.save(`Factura_${order.id}.pdf`);
+    
+    } catch (err) {
+        console.error('Error generando PDF:', err);
+        alert('Ocurrió un error al generar de factura. Detalles: ' + err.message);
+    }
 };
 
 // Helper: formato COP para PDF (sin DOM)
