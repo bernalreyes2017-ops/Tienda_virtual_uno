@@ -50,7 +50,7 @@ const _buildPDF = (order) => {
     doc.setFontSize(9);
     doc.setFont('helvetica', 'normal');
     doc.text('Calle 29 # 39-82, Barrio Villa Caribe, Montería - Córdoba', 15, 24);
-    doc.text('Tel: +57 310 5913506  |  milagrocs@gmail.com', 15, 30);
+    doc.text('Tel: +57 310 5913506  |  milagrocssas@gmail.com', 15, 30);
 
     // Núm factura (derecha)
     doc.setFont('helvetica', 'bold');
@@ -196,7 +196,7 @@ const _buildPDF = (order) => {
     doc.text('Este documento es generado electrónicamente y no requiere firma física.', W / 2, y, { align: 'center' });
 
     // ---- WATERMARK MUY SUTIL ----
-    doc.setTextColor(230, 245, 232);
+    doc.setTextColor(246, 252, 247); // Más transparente / cercano al blanco
     doc.setFontSize(60);
     doc.setFont('helvetica', 'bold');
     doc.text('MilAgro', W / 2, 160, { align: 'center', angle: 30 });
