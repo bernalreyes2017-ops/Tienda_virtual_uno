@@ -150,6 +150,17 @@
                         <i class="fa-solid fa-phone"></i> ${m.phone}
                     </div>
                     <div class="msg-body">${m.mensaje}</div>
+                    ${m.attachment ? `
+                        <div style="margin-bottom:12px; padding:10px; background:#f9f9f9; border:1px solid #ddd; border-radius:8px;">
+                            <p style="margin:0 0 5px 0; font-size:0.85rem; color:var(--texto-secundario);">
+                                <i class="fa-solid fa-paperclip"></i> Adjunto: <strong>${m.attachmentName || 'Archivo'}</strong>
+                            </p>
+                            ${m.attachmentType && m.attachmentType.startsWith('image/') 
+                                ? `<img src="${m.attachment}" style="max-width:100%; max-height:200px; border-radius:4px; display:block; margin-top:5px; cursor:pointer; border:1px solid #eee;" onclick="window.open('${m.attachment}')">` 
+                                : `<a href="${m.attachment}" download="${m.attachmentName || 'adjunto'}" class="btn btn-outline btn-sm"><i class="fa-solid fa-download"></i> Descargar Archivo</a>`
+                            }
+                        </div>
+                    ` : ''}
                     <div class="msg-actions">
                         <a href="https://wa.me/57${m.phone}?text=${encodeURIComponent('¡Hola ' + m.name + '! 👋\nGracias por contactarnos en MilAgro CS S.A.S.\nEstamos respondiendo a tu mensaje sobre: ' + m.motivo + '\n\n')}" 
                            target="_blank" class="btn btn-primary btn-sm">

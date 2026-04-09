@@ -125,6 +125,20 @@
         </div>
     </div>
 
+    <!-- Modal Pedidos del Cliente -->
+    <div class="modal-overlay" id="clientOrdersModal">
+        <div class="modal-content fade-in" style="max-width: 600px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
+                <h2 class="color-verde" style="margin:0;"><i class="fa-solid fa-receipt"></i> Pedidos y Facturas</h2>
+                <button class="btn btn-outline btn-sm" onclick="closeClientOrdersModal()" style="border:none; font-size:1.5rem; padding:0 10px;">&times;</button>
+            </div>
+            <p style="text-align:left; margin-bottom:15px;">Cliente: <strong id="coName"></strong></p>
+            <div id="coList" style="max-height: 400px; overflow-y: auto; text-align: left;">
+                <!-- JS loaded -->
+            </div>
+        </div>
+    </div>
+
     <script src="../../js/utils.js"></script>
     <script>
         let selectedCedula = null;
@@ -177,13 +191,16 @@
                     <td><span style="font-size:1.1rem; color:var(--verde-oscuro); font-weight:bold;"><i class="fa-solid fa-star"></i> ${pts}</span></td>
                     <td>${formatCOP(eq)}</td>
                     <td style="display:flex; gap:5px; flex-wrap:wrap;">
-                        <button class="btn btn-primary btn-sm" onclick="openAddPointsModal('${c.cedula}', '${c.name}', '${c.phone}')" style="padding:5px;">
+                        <button class="btn btn-primary btn-sm" onclick="openAddPointsModal('${c.cedula}', '${c.name.replace(/'/g, "\\'")}', '${c.phone}')" style="padding:5px;" title="Cargar Puntos">
                             <i class="fa-solid fa-plus"></i> Puntos
                         </button>
-                        <button class="btn-redeem" onclick="openRedeemModal('${c.cedula}', '${c.name}', ${pts})" ${pts <= 0 ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''} style="padding:5px;">
+                        <button class="btn-redeem" onclick="openRedeemModal('${c.cedula}', '${c.name.replace(/'/g, "\\'")}', ${pts})" ${pts <= 0 ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''} style="padding:5px;" title="Redimir">
                             <i class="fa-solid fa-gift"></i> Canjear
                         </button>
-                        <button class="btn btn-outline btn-sm" onclick="openEditModal('${c.cedula}', '${c.name}', '${c.phone}', '${c.email || ''}')" style="padding:5px;">
+                        <button class="btn btn-outline btn-sm" onclick="openClientOrdersModal('${c.phone}', '${c.name.replace(/'/g, "\\'")}')" style="padding:5px; color:var(--verde-oscuro);" title="Ver Pedidos y Facturas">
+                            <i class="fa-solid fa-file-invoice"></i> Pedidos
+                        </button>
+                        <button class="btn btn-outline btn-sm" onclick="openEditModal('${c.cedula}', '${c.name.replace(/'/g, "\\'")}', '${c.phone}', '${c.email || ''}')" style="padding:5px;" title="Editar">
                             <i class="fa-solid fa-pen"></i>
                         </button>
                     </td>
@@ -290,6 +307,42 @@
                     }
                 }
             }
+        };
+
+        // ================== PEDIDOS Y FACTURAS (MODAL) ==================
+        const openClientOrdersModal = (phone, name) => {
+            document.getElementById('coName').textContent = name;
+            const ordersDB = JSON.parse(localStorage.getItem('milagro_db_orders')) || [];
+            
+            // Filtrar pedidos por nombre o teléfono del cliente
+            const clientOrders = ordersDB.filter(o => 
+                (o.phone === phone) || 
+                (o.customer.toLowerCase() === name.toLowerCase())
+            ).reverse();
+
+            const listCont = document.getElementById('coList');
+            if (clientOrders.length === 0) {
+                listCont.innerHTML = '<div style="text-align:center; padding:2rem; background:var(--blanco-fondo); border-radius:8px;"><i class="fa-solid fa-box-open" style="font-size:2rem; color:var(--gris-medio); margin-bottom:10px;"></i><p style="color:var(--texto-secundario); margin:0;">El cliente no tiene pedidos registrados aún.</p></div>';
+            } else {
+                listCont.innerHTML = clientOrders.map(o => `
+                    <div style="border:1px solid #ddd; border-radius:8px; padding:12px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; background:#fafafa;">
+                        <div>
+                            <strong style="color:var(--verde-oscuro);">${o.id}</strong> - ${new Date(o.date).toLocaleDateString('es-CO')}<br>
+                            <span style="font-size:0.85rem; color:var(--texto-secundario);">${o.items.length} productos | Medio: ${o.method.toUpperCase()}</span><br>
+                            Total: <strong style="color:var(--texto-principal);">${formatCOP(o.total)}</strong>
+                        </div>
+                        <button class="btn btn-outline btn-sm" onclick="window.generateInvoicePDF('${o.id}')" title="Descargar Factura PDF" style="color:var(--verde-oscuro); border-color:var(--verde-oscuro);">
+                            <i class="fa-solid fa-file-pdf"></i> PDF
+                        </button>
+                    </div>
+                `).join('');
+            }
+
+            document.getElementById('clientOrdersModal').style.display = 'flex';
+        };
+
+        const closeClientOrdersModal = () => {
+            document.getElementById('clientOrdersModal').style.display = 'none';
         };
     </script>
     <script src="../../js/utils.js"></script>

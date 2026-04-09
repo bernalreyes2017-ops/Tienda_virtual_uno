@@ -139,8 +139,14 @@
                             <option>Consulta de producto</option>
                             <option>Cotización mayorista</option>
                             <option>Reclamos / Soporte</option>
+                            <option>Soporte de Pago</option>
                             <option>Otro</option>
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Adjuntar archivo (opcional)</label>
+                        <input type="file" id="ctFile" class="form-control" accept="image/*,.pdf" style="padding: 10px;">
+                        <small style="color:var(--gris-medio);">Fotos o PDF (Máx. 2MB)</small>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Mensaje</label>
@@ -157,8 +163,29 @@
     <script src="../js/auth.js"></script>
     <script src="../js/mobile-menu.js"></script>
     <script>
-        window.handleContactSubmit = (e) => {
+        window.handleContactSubmit = async (e) => {
             e.preventDefault();
+            
+            const fileInput = document.getElementById('ctFile');
+            let attachmentBase64 = null;
+            let attachmentName = null;
+            let attachmentType = null;
+
+            if (fileInput.files && fileInput.files[0]) {
+                const file = fileInput.files[0];
+                if (file.size > 2 * 1024 * 1024) {
+                    alert('El archivo es demasiado grande. Máximo 2MB.');
+                    return;
+                }
+                attachmentName = file.name;
+                attachmentType = file.type;
+                attachmentBase64 = await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.readAsDataURL(file);
+                });
+            }
+
             const msg = {
                 id: 'MSG-' + Date.now(),
                 date: new Date().toISOString(),
@@ -166,8 +193,12 @@
                 phone: document.getElementById('ctPhone').value.trim(),
                 motivo: document.getElementById('ctMotivo').value,
                 mensaje: document.getElementById('ctMsg').value.trim(),
+                attachment: attachmentBase64,
+                attachmentName: attachmentName,
+                attachmentType: attachmentType,
                 read: false
             };
+
             const msgs = JSON.parse(localStorage.getItem('milagro_db_messages')) || [];
             msgs.push(msg);
             localStorage.setItem('milagro_db_messages', JSON.stringify(msgs));
