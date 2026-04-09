@@ -36,22 +36,47 @@
     .admin-sidebar {
         position: fixed !important;
         left: -280px !important;
-        z-index: 2000;
+        top: 0 !important;
+        z-index: 2000 !important;
         transition: left 0.35s cubic-bezier(0.22, 1, 0.36, 1) !important;
         width: 260px !important;
+        height: 100% !important;
         height: 100dvh !important;
-        overflow-y: auto;
+        overflow-y: auto !important;
     }
 
     .admin-sidebar.open {
         left: 0 !important;
     }
 
-    /* Mover el contenido principal a 0 en mobile */
+    /* Mover el contenido principal a 0 en mobile — funciona para todos los layouts */
     .admin-main {
         margin-left: 0 !important;
         padding: var(--sp-md) !important;
-        padding-top: 70px !important; /* espacio para el hamburguesa */
+        padding-top: 65px !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+        box-sizing: border-box !important;
+    }
+
+    /* POS: necesita flex column completo */
+    body:has(.pos-grid) {
+        flex-direction: column;
+    }
+
+    /* Layout POS en mobile — apilado verticalmente */
+    .pos-grid {
+        grid-template-columns: 1fr !important;
+        height: auto !important;
+    }
+
+    .pos-cart {
+        height: auto !important;
+        max-height: 60vh;
+    }
+
+    .products-grid-scroll {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)) !important;
     }
 
     /* Mostrar el botón hamburguesa */
@@ -67,6 +92,38 @@
     /* Tablas más compactas en mobile */
     th, td {
         padding: 8px 10px !important;
-        font-size: 0.85rem;
+        font-size: 0.85rem !important;
+    }
+
+    /* Header admin responsive */
+    .admin-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+    }
+
+    .admin-header > div:last-child {
+        width: 100%;
+    }
+
+    /* Toolbar inventario */
+    .toolbar {
+        flex-direction: column !important;
+    }
+
+    .search-box {
+        max-width: 100% !important;
+    }
+
+    /* Pedido card responsive */
+    .pedido-card {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px;
+    }
+
+    .pedido-card > div:last-child {
+        width: 100%;
+        align-items: flex-start !important;
     }
 }

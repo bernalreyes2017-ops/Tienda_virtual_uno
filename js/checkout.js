@@ -56,7 +56,7 @@ const checkUserPoints = () => {
 
     // Calcular el máximo de puntos que se pueden redimir (limitado al valor total)
     const maxRedeemablePts = Math.min(availablePoints, Math.floor(cartSubtotal / 20));
-    const maxDiscount = maxRedeemablePts * 20;
+    const maxDiscount = maxRedeemablePts * 15;
 
     // Inyectar el panel de puntos en el checkout
     const pointsPanel = document.getElementById('pointsPanel');
@@ -67,10 +67,10 @@ const checkUserPoints = () => {
             <h4 style="margin: 0 0 8px 0; color: var(--verde-oscuro);">
                 <i class="fa-solid fa-star" style="color:var(--amarillo);"></i> 
                 Tienes <strong>${availablePoints} puntos</strong> disponibles 
-                <small style="color:var(--gris-medio);">(≈ ${formatCOP(availablePoints * 20)} en descuento)</small>
+                <small style="color:var(--gris-medio);">(≈ ${formatCOP(availablePoints * 15)} en descuento)</small>
             </h4>
             <p style="margin: 0 0 12px 0; font-size: 0.9rem; color: var(--texto-secundario);">
-                Cada punto vale $20. Puedes usar hasta <strong>${maxRedeemablePts} pts</strong> en esta compra (máx. ${formatCOP(maxDiscount)} de descuento).
+                Cada punto vale $15. Puedes usar hasta <strong>${maxRedeemablePts} pts</strong> en esta compra (máx. ${formatCOP(maxDiscount)} de descuento).
             </p>
             <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
                 <input type="number" id="pointsInput" class="form-control" 
@@ -100,7 +100,7 @@ window.previewPointsDiscount = (available, maxPts) => {
     if (val < 0) { val = 0; input.value = 0; }
 
     if (val > 0) {
-        const discount = val * 20;
+        const discount = val * 15;
         const newTotal = cartSubtotal - discount;
         preview.innerHTML = `✅ Aplicarás <strong>${val} pts</strong> → descuento de <strong>${formatCOP(discount)}</strong> → Total: <strong style="color:var(--error);">${formatCOP(newTotal)}</strong>`;
     } else {
@@ -116,7 +116,7 @@ window.applyPoints = (available, maxPts) => {
     if (val > available) { alert('No tienes suficientes puntos.'); return; }
 
     pointsRedeemed = val;
-    pointsDiscount = val * 20;
+    pointsDiscount = val * 15;
     cartTotal = cartSubtotal - pointsDiscount;
 
     input.disabled = true;

@@ -71,9 +71,11 @@
     </div>
 
     <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="../js/utils.js"></script>
     <script src="../js/auth.js"></script>
     <script src="../js/mobile-menu.js"></script>
+    <script src="../js/invoice.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const userStr = localStorage.getItem('milagro_user');
@@ -131,7 +133,12 @@
                             <h4>${o.id} ${statusBadge}</h4>
                             <span>Fecha: ${new Date(o.date).toLocaleDateString('es-CO')} | ${o.items.length} productos | <strong>${formatCOP(o.total)}</strong></span>
                         </div>
-                        <a href="order-tracking.html?id=${o.id}" class="btn btn-outline btn-sm">Hacer Seguimiento</a>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                            <a href="order-tracking.html?id=${o.id}" class="btn btn-outline btn-sm">Seguimiento</a>
+                            <button onclick="window.generateInvoicePDF('${o.id}')" class="btn btn-outline btn-sm" title="Descargar Factura" style="color:var(--verde-oscuro);">
+                                <i class="fa-solid fa-file-pdf"></i> Factura
+                            </button>
+                        </div>
                     </div>
                 `;
             });

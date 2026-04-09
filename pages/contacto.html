@@ -124,26 +124,27 @@
             <div class="contact-form">
                 <h2 class="color-verde" style="margin-bottom:var(--sp-lg);">Envíanos un mensaje</h2>
                 
-                <form onsubmit="event.preventDefault(); alert('Mensaje enviado. Te contactaremos pronto.'); this.reset();">
+                <form id="contactForm" onsubmit="handleContactSubmit(event)">
                     <div class="form-group">
                         <label class="form-label">Nombre Completo</label>
-                        <input type="text" class="form-control" required>
+                        <input type="text" id="ctName" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Celular</label>
-                        <input type="tel" class="form-control" required>
+                        <input type="tel" id="ctPhone" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Motivo</label>
-                        <select class="form-control">
+                        <select id="ctMotivo" class="form-control">
                             <option>Consulta de producto</option>
                             <option>Cotización mayorista</option>
                             <option>Reclamos / Soporte</option>
+                            <option>Otro</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Mensaje</label>
-                        <textarea class="form-control" rows="5" required></textarea>
+                        <textarea id="ctMsg" class="form-control" rows="5" required></textarea>
                     </div>
 
                     <button type="submit" class="btn btn-primary btn-block">Enviar Mensaje</button>
@@ -155,5 +156,24 @@
 
     <script src="../js/auth.js"></script>
     <script src="../js/mobile-menu.js"></script>
+    <script>
+        window.handleContactSubmit = (e) => {
+            e.preventDefault();
+            const msg = {
+                id: 'MSG-' + Date.now(),
+                date: new Date().toISOString(),
+                name: document.getElementById('ctName').value.trim(),
+                phone: document.getElementById('ctPhone').value.trim(),
+                motivo: document.getElementById('ctMotivo').value,
+                mensaje: document.getElementById('ctMsg').value.trim(),
+                read: false
+            };
+            const msgs = JSON.parse(localStorage.getItem('milagro_db_messages')) || [];
+            msgs.push(msg);
+            localStorage.setItem('milagro_db_messages', JSON.stringify(msgs));
+            document.getElementById('contactForm').reset();
+            alert('✅ Mensaje enviado con éxito.\nNuestro equipo te contactará pronto. ¡Gracias!');
+        };
+    </script>
 </body>
 </html>

@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="../../css/components.css">
     <link rel="stylesheet" href="../../css/admin-mobile.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
         body { background-color: var(--gris-claro); display: flex; min-height: 100vh; margin: 0; }
@@ -45,6 +46,7 @@
             <a href="inventario.html"><i class="fa-solid fa-boxes-stacked"></i> Inventario</a>
             <a href="pedidos.html"><i class="fa-solid fa-truck-fast"></i> Pedidos Web</a>
             <a href="clientes.html" class="active"><i class="fa-solid fa-users"></i> Clientes (CRM)</a>
+            <a href="mensajes.html"><i class="fa-solid fa-envelope"></i> Mensajes</a>
             <a href="reportes.html"><i class="fa-solid fa-file-invoice-dollar"></i> Reportes</a>
             <a href="configuracion.html"><i class="fa-solid fa-gear"></i> Configuración</a>
         </div>
@@ -72,7 +74,7 @@
                         <th>Nombre</th>
                         <th>Contacto</th>
                         <th>Puntos Disp.</th>
-                        <th>Equivalencia ($20/pt)</th>
+                        <th>Equivalencia ($15/pt)</th>
                         <th>Acciones CRM</th>
                     </tr>
                 </thead>
@@ -135,7 +137,7 @@
             // Actualizar equivalente en tiempo real - Modal Redimir
             document.getElementById('rdAmount').addEventListener('input', (e) => {
                 const val = parseInt(e.target.value) || 0;
-                document.getElementById('rdEquivalent').textContent = formatCOP(val * 20);
+                document.getElementById('rdEquivalent').textContent = formatCOP(val * 15);
             });
 
             // Preview puntos a cargar - Modal Agregar
@@ -167,7 +169,7 @@
             clients.forEach(c => {
                 const tr = document.createElement('tr');
                 const pts = c.points || 0;
-                const eq = pts * 20;
+                const eq = pts * 15;
                 tr.innerHTML = `
                     <td><strong>${c.cedula || '--'}</strong></td>
                     <td>${c.name}</td>
@@ -226,7 +228,7 @@
                 renderClients();
 
                 // WhatsApp Bridge
-                const waMsg = `¡Hola ${selectedName}! 🌟\nGracias por tu compra en MilAgro CS S.A.S.\nHemos cargado *${pointsGained} puntos* a tu cuenta.\n\nActualmente tienes un total de *${users[idx].points} puntos* disponibles para canjear en tus próximas compras.\n\n_(Cada punto equivale a $20)_ 🎁`;
+                const waMsg = `¡Hola ${selectedName}! 🌟\nGracias por tu compra en MilAgro CS S.A.S.\nHemos cargado *${pointsGained} puntos* a tu cuenta.\n\nActualmente tienes un total de *${users[idx].points} puntos* disponibles para canjear en tus próximas compras.\n\n_(Cada punto equivale a $15)_ 🎁`;
                 const waUrl = `https://wa.me/57${selectedPhone}?text=${encodeURIComponent(waMsg)}`;
 
                 closeAddPointsModal();
@@ -266,7 +268,7 @@
                 if(amount > users[idx].points) return alert('El cliente no tiene tantos puntos.');
                 users[idx].points -= amount;
                 localStorage.setItem('milagro_db_users', JSON.stringify(users));
-                alert(`¡Canje exitoso! Se restaron ${amount} puntos.\nDebes aplicar un descuento en caja de ${formatCOP(amount * 20)}`);
+                alert(`¡Canje exitoso! Se restaron ${amount} puntos.\nDebes aplicar un descuento en caja de ${formatCOP(amount * 15)}`);
                 closeRedeemModal();
                 renderClients();
             }
@@ -290,6 +292,8 @@
             }
         };
     </script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../js/invoice.js"></script>
     <script src="../../js/admin-mobile.js"></script>
 </body>
 </html>

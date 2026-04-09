@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="../../css/components.css">
     <link rel="stylesheet" href="../../css/admin-mobile.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
         body { background-color: var(--gris-claro); display: flex; min-height: 100vh; margin: 0; }
@@ -44,6 +45,7 @@
             <a href="inventario.html"><i class="fa-solid fa-boxes-stacked"></i> Inventario</a>
             <a href="pedidos.html" class="active"><i class="fa-solid fa-truck-fast"></i> Pedidos Web</a>
             <a href="clientes.html"><i class="fa-solid fa-users"></i> Clientes (CRM)</a>
+            <a href="mensajes.html"><i class="fa-solid fa-envelope"></i> Mensajes</a>
             <a href="reportes.html"><i class="fa-solid fa-file-invoice-dollar"></i> Reportes</a>
             <a href="configuracion.html"><i class="fa-solid fa-gear"></i> Configuración</a>
         </div>
@@ -123,6 +125,7 @@
                         </div>
                         <div style="display:flex; flex-direction:column; gap:10px; align-items:flex-end;">
                             ${nextAction ? `<button class="btn btn-primary btn-sm" onclick="changeOrderStatus('${o.id}', '${nextStatus}')">${nextAction}</button>` : ''}
+                            <button class="btn btn-outline btn-sm" onclick="window.generateInvoicePDF('${o.id}')" title="Descargar Factura PDF" style="color:var(--verde-oscuro);"><i class="fa-solid fa-file-pdf"></i> Factura</button>
                         </div>
                     </div>
                 `;
@@ -140,6 +143,8 @@
             }
         };
     </script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../js/invoice.js"></script>
     <script src="../../js/admin-mobile.js"></script>
 </body>
 </html>
