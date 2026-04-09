@@ -33,7 +33,7 @@ const _buildPDF = (order) => {
             return;
         }
 
-        const doc = new JSPDF_CLASS({ unit: 'mm', format: 'a4' });
+        const doc = new JSPDF_CLASS('p', 'mm', 'a4');
 
     // ---- Colores ----
     const VERDE = [44, 110, 55];

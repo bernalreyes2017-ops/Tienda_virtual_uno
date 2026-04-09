@@ -103,8 +103,9 @@ window.handleLogin = (e) => {
     const pass = document.getElementById('passInput').value;
     
     const users = getUsers();
-    // Busca por cedula O por phone (para admin/caja que usan 'admin'/'caja' como phone)
-    const user = users.find(u => (String(u.cedula) === input || String(u.phone) === input) && u.pass === pass);
+    // Busca por cedula O por phone ignorando mayusculas/minusculas
+    const inputLower = input.toLowerCase();
+    const user = users.find(u => (String(u.cedula).toLowerCase() === inputLower || String(u.phone).toLowerCase() === inputLower) && u.pass === pass);
 
     if(user) {
         localStorage.setItem('milagro_user', JSON.stringify(user));
