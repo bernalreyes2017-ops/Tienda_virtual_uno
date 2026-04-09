@@ -209,8 +209,20 @@ const _buildPDF = (order) => {
     doc.setFont('helvetica', 'bold');
     doc.text('MilAgro', W / 2, 160, { align: 'center', angle: 30 });
 
-    // ---- GUARDAR ----
-    doc.save(`Factura_${order.id}.pdf`);
+    // ---- PROPIEDADES DEL DOCUMENTO ----
+    doc.setProperties({
+        title: `Factura_${order.id}`
+    });
+
+    // ---- PREVISUALIZAR EN NUEVA PESTAÑA ----
+    // Genera la vista previa para que el usuario decida si descarga o no
+    const pdfBlob = doc.output('blob');
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+    
+    const newWindow = window.open(pdfUrl, '_blank');
+    if (!newWindow) {
+        alert('Por favor, permite que se abran ventanas emergentes (pop-ups) en tu navegador para visualizar la factura.');
+    }
     
     } catch (err) {
         console.error('Error generando PDF:', err);
