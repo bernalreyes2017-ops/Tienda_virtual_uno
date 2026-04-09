@@ -75,6 +75,12 @@ const _buildPDF = (order) => {
 
     y = 50;
 
+    // ---- WATERMARK MUY SUTIL (FONDO) ----
+    doc.setTextColor(244, 250, 244); // Más transparente / cercano al blanco
+    doc.setFontSize(70);
+    doc.setFont('helvetica', 'bold');
+    doc.text('MilAgro', W / 2, 160, { align: 'center', angle: 30 });
+
     // ---- INFO CLIENTE ----
     doc.setFillColor(GRIS_CLARO[0], GRIS_CLARO[1], GRIS_CLARO[2]);
     doc.rect(10, y, W - 20, 28, 'F');
@@ -203,12 +209,6 @@ const _buildPDF = (order) => {
     doc.text('¡Gracias por tu compra en MilAgro CS S.A.S! — "Del campo a tu hogar con calidad y confianza"', W / 2, y, { align: 'center' });
     y += 5;
     doc.text('Este documento es generado electrónicamente y no requiere firma física.', W / 2, y, { align: 'center' });
-
-    // ---- WATERMARK MUY SUTIL ----
-    doc.setTextColor(246, 252, 247); // Más transparente / cercano al blanco
-    doc.setFontSize(60);
-    doc.setFont('helvetica', 'bold');
-    doc.text('MilAgro', W / 2, 160, { align: 'center', angle: 30 });
 
     // ---- PROPIEDADES DEL DOCUMENTO ----
     doc.setProperties({
