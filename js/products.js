@@ -23,6 +23,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                 chip.classList.remove('active');
             }
         });
+        
+        // Sincronizar el select movil
+        const mobileSelect = document.getElementById('mobileCategorySelect');
+        if (mobileSelect) {
+            mobileSelect.value = catParam;
+        }
     }
 
     // 3. Cargar productos desde JSON
@@ -116,6 +122,27 @@ const setupEventListeners = () => {
             renderProducts(allProducts, currentCategory, document.getElementById('searchInput').value);
         });
     });
+
+    // Filtro por Selector Desplegable (Móvil)
+    const mobileSelect = document.getElementById('mobileCategorySelect');
+    if (mobileSelect) {
+        mobileSelect.addEventListener('change', (e) => {
+            currentCategory = e.target.value;
+            
+            // Reflejar en chips por consistencia
+            chips.forEach(c => {
+                if(c.dataset.cat === currentCategory) c.classList.add('active');
+                else c.classList.remove('active');
+            });
+            
+            // Actualizar URL sin recargar
+            const url = new URL(window.location);
+            url.searchParams.set('cat', currentCategory);
+            window.history.pushState({}, '', url);
+
+            renderProducts(allProducts, currentCategory, document.getElementById('searchInput').value);
+        });
+    }
 
     // Búsqueda de texto
     const searchInput = document.getElementById('searchInput');

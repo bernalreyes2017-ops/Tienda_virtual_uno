@@ -161,12 +161,19 @@ const updateAuthUI = () => {
     const user = getCurrentUser();
     const loginBtns = document.querySelectorAll('.nav-link[href$="login.html"], .btn[href$="login.html"]'); 
     const authGlobal = document.getElementById('btnAuthGlobal');
-    
+    const mobileAuth = document.getElementById('mobileAuthBtn');
+
     if (user) {
+
         if(authGlobal) {
             if(user.role === 'admin' || user.role === 'cajero') {
                 authGlobal.innerHTML = `<i class="fa-solid fa-shield"></i> Panel Staff`;
                 authGlobal.href = window.location.pathname.includes('/pages/') ? (window.location.pathname.includes('/admin/') ? 'dashboard.html' : 'admin/dashboard.html') : 'pages/admin/dashboard.html';
+                
+                if(mobileAuth) {
+                    mobileAuth.innerHTML = `<i class="fa-solid fa-shield"></i> Panel Staff`;
+                    mobileAuth.href = authGlobal.href;
+                }
             } else {
                 // Refrescar puntos del usuario desde la DB
                 const freshUsers = getUsers();
@@ -179,6 +186,13 @@ const updateAuthUI = () => {
                 authGlobal.style.border = "none";
                 authGlobal.style.background = "var(--verde-claro)";
                 authGlobal.style.color = "var(--verde-oscuro)";
+                
+                if(mobileAuth) {
+                    mobileAuth.innerHTML = `<i class="fa-solid fa-user-check"></i> Hola, ${user.name.split(' ')[0]} <b style="color:var(--amarillo); margin-left:5px;">⭐ ${pts} pts</b>`;
+                    mobileAuth.href = authGlobal.href;
+                    mobileAuth.style.background = "var(--verde-claro)";
+                    mobileAuth.style.color = "var(--verde-oscuro)";
+                }
             }
         } else {
             loginBtns.forEach(btn => {
@@ -190,6 +204,15 @@ const updateAuthUI = () => {
                     btn.href = window.location.pathname.includes('/pages/') ? 'mi-cuenta.html' : 'pages/mi-cuenta.html';
                 }
             });
+            if(mobileAuth && (user.role === 'admin' || user.role === 'cajero')) {
+                mobileAuth.innerHTML = `<i class="fa-solid fa-shield"></i> Panel Staff`;
+                mobileAuth.href = window.location.pathname.includes('/pages/') ? 'admin/dashboard.html' : 'pages/admin/dashboard.html';
+            } else if (mobileAuth && user.role === 'client') {
+                mobileAuth.innerHTML = `<i class="fa-solid fa-user-check"></i> Hola, ${user.name.split(' ')[0]}`;
+                mobileAuth.href = window.location.pathname.includes('/pages/') ? 'mi-cuenta.html' : 'pages/mi-cuenta.html';
+                mobileAuth.style.background = "var(--verde-claro)";
+                mobileAuth.style.color = "var(--verde-oscuro)";
+            }
         }
         
         // Llenar vista mi cuenta específica

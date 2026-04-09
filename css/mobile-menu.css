@@ -60,7 +60,8 @@
     right: -100%;
     width: 85%;
     max-width: 340px;
-    height: 100vh;
+    height: 100%; /* Fix fallback */
+    height: 100dvh; /* Fixed for iOS/Android bottom bar issue */
     background: white;
     box-shadow: -5px 0 30px rgba(0,0,0,0.15);
     display: flex;
@@ -162,4 +163,22 @@
     background: var(--verde-medio);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(44,110,55,0.3);
+}
+
+/* ---- Utilidades Responsivas Adicionales ---- */
+.mobile-only {
+    display: none !important;
+}
+
+@media (max-width: 767px) {
+    .mobile-only {
+        display: block !important;
+    }
+    .desktop-only {
+        display: none !important;
+    }
+    /* Ocultar las "pastillas" de categorías largas en mobile */
+    .category-chips {
+        display: none !important;
+    }
 }

@@ -119,7 +119,22 @@
             <div class="search-bar">
                 <input type="text" id="searchInput" class="form-control" placeholder="Buscar por nombre, ej: 'Concentrado Perros'...">
             </div>
-            <div class="category-chips" id="categoryFilters">
+            
+            <!-- Selector Desplegable (Solo Mobile) -->
+            <select id="mobileCategorySelect" class="form-control mobile-only" style="margin-bottom: 20px;">
+                <option value="all">Todas las Categorías</option>
+                <option value="mascotas">Mascotas 🐕</option>
+                <option value="bovinos">Bovinos 🐄</option>
+                <option value="aves">Aves 🐔</option>
+                <option value="porcinos">Porcinos 🐖</option>
+                <option value="equinos">Equinos 🐎</option>
+                <option value="peces">Peces 🐟</option>
+                <option value="medicamentos_veterinarios">Medicamentos Veterinarios 💊</option>
+                <option value="plaguicidas">Plaguicidas 🧪</option>
+                <option value="herramientas_agricolas">Herramientas Agrícolas 🔧</option>
+            </select>
+
+            <div class="category-chips desktop-only" id="categoryFilters">
                 <div class="chip active" data-cat="all">Todos</div>
                 <div class="chip" data-cat="mascotas">Mascotas 🐕</div>
                 <div class="chip" data-cat="bovinos">Bovinos 🐄</div>
