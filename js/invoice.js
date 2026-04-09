@@ -47,10 +47,10 @@ const _buildPDF = (order) => {
     let y = 0;
 
     // ---- HEADER VERDE ----
-    doc.setFillColor(...VERDE);
+    doc.setFillColor(VERDE[0], VERDE[1], VERDE[2]);
     doc.rect(0, 0, W, 42, 'F');
 
-    doc.setTextColor(...BLANCO);
+    doc.setTextColor(BLANCO[0], BLANCO[1], BLANCO[2]);
     doc.setFontSize(22);
     doc.setFont('helvetica', 'bold');
     doc.text('MilAgro CS S.A.S', 15, 16);
@@ -65,9 +65,9 @@ const _buildPDF = (order) => {
     doc.setFontSize(11);
     doc.text('FACTURA DE VENTA', W - 15, 14, { align: 'right' });
     doc.setFontSize(14);
-    doc.setTextColor(...AMARILLO);
-    doc.text(order.id, W - 15, 22, { align: 'right' });
-    doc.setTextColor(...BLANCO);
+    doc.setTextColor(AMARILLO[0], AMARILLO[1], AMARILLO[2]);
+    doc.text(String(order.id || 'N/A'), W - 15, 22, { align: 'right' });
+    doc.setTextColor(BLANCO[0], BLANCO[1], BLANCO[2]);
     doc.setFontSize(9);
     doc.setFont('helvetica', 'normal');
     doc.text(`Fecha: ${new Date(order.date).toLocaleDateString('es-CO', {year:'numeric', month:'long', day:'numeric'})}`, W - 15, 30, { align: 'right' });
@@ -76,15 +76,15 @@ const _buildPDF = (order) => {
     y = 50;
 
     // ---- INFO CLIENTE ----
-    doc.setFillColor(...GRIS_CLARO);
+    doc.setFillColor(GRIS_CLARO[0], GRIS_CLARO[1], GRIS_CLARO[2]);
     doc.rect(10, y, W - 20, 28, 'F');
 
-    doc.setTextColor(...VERDE);
+    doc.setTextColor(VERDE[0], VERDE[1], VERDE[2]);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(10);
     doc.text('DATOS DEL CLIENTE', 15, y + 7);
 
-    doc.setTextColor(...NEGRO);
+    doc.setTextColor(NEGRO[0], NEGRO[1], NEGRO[2]);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9.5);
     doc.text(`Nombre: ${order.customer}`, 15, y + 14);
@@ -95,9 +95,9 @@ const _buildPDF = (order) => {
 
     // ---- TABLA DE PRODUCTOS ----
     // Header tabla
-    doc.setFillColor(...VERDE);
+    doc.setFillColor(VERDE[0], VERDE[1], VERDE[2]);
     doc.rect(10, y, W - 20, 8, 'F');
-    doc.setTextColor(...BLANCO);
+    doc.setTextColor(BLANCO[0], BLANCO[1], BLANCO[2]);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(9);
     doc.text('Producto', 13, y + 5.5);
@@ -114,22 +114,23 @@ const _buildPDF = (order) => {
             doc.setFillColor(248, 252, 248);
             doc.rect(10, y, W - 20, rowH, 'F');
         }
-        doc.setTextColor(...NEGRO);
+        doc.setTextColor(NEGRO[0], NEGRO[1], NEGRO[2]);
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(9);
 
         // Truncar nombre si es muy largo
-        const nameTrunc = item.name.length > 45 ? item.name.substring(0, 43) + '…' : item.name;
-        doc.text(nameTrunc, 13, y + 5.5);
+        const itemName = item.name ? String(item.name) : 'Producto sin nombre';
+        const nameTrunc = itemName.length > 45 ? itemName.substring(0, 43) + '…' : itemName;
+        doc.text(String(nameTrunc), 13, y + 5.5);
         doc.text(String(item.quantity), 110, y + 5.5, { align: 'center' });
-        doc.text(formatCOPPDF(item.price), 145, y + 5.5, { align: 'center' });
-        doc.text(formatCOPPDF(item.price * item.quantity), W - 13, y + 5.5, { align: 'right' });
+        doc.text(String(formatCOPPDF(item.price)), 145, y + 5.5, { align: 'center' });
+        doc.text(String(formatCOPPDF(item.price * item.quantity)), W - 13, y + 5.5, { align: 'right' });
 
         y += rowH;
     });
 
     // Línea cierre tabla
-    doc.setDrawColor(...VERDE);
+    doc.setDrawColor(VERDE[0], VERDE[1], VERDE[2]);
     doc.setLineWidth(0.5);
     doc.line(10, y, W - 10, y);
 
@@ -146,39 +147,39 @@ const _buildPDF = (order) => {
 
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9.5);
-    doc.setTextColor(...GRIS_TEXTO);
+    doc.setTextColor(GRIS_TEXTO[0], GRIS_TEXTO[1], GRIS_TEXTO[2]);
     doc.text('Subtotal productos:', totalsX, y + 5);
-    doc.setTextColor(...NEGRO);
-    doc.text(formatCOPPDF(subtotal), W - 13, y + 5, { align: 'right' });
+    doc.setTextColor(NEGRO[0], NEGRO[1], NEGRO[2]);
+    doc.text(String(formatCOPPDF(subtotal)), W - 13, y + 5, { align: 'right' });
 
     if (discount > 0) {
         y += 7;
-        doc.setTextColor(...GRIS_TEXTO);
+        doc.setTextColor(GRIS_TEXTO[0], GRIS_TEXTO[1], GRIS_TEXTO[2]);
         doc.text(`Descuento (${redeemed} pts):`, totalsX, y + 5);
-        doc.setTextColor([200, 0, 0]);
+        doc.setTextColor(200, 0, 0);
         doc.text(`-${formatCOPPDF(discount)}`, W - 13, y + 5, { align: 'right' });
     }
 
     y += 7;
-    doc.setTextColor(...GRIS_TEXTO);
+    doc.setTextColor(GRIS_TEXTO[0], GRIS_TEXTO[1], GRIS_TEXTO[2]);
     doc.text('Envío:', totalsX, y + 5);
     doc.setTextColor(150, 100, 0);
     doc.text('A convenir', W - 13, y + 5, { align: 'right' });
 
     y += 4;
     // Separador total
-    doc.setFillColor(...VERDE);
+    doc.setFillColor(VERDE[0], VERDE[1], VERDE[2]);
     doc.rect(totalsX - 5, y + 3, W - totalsX - 5, 9, 'F');
-    doc.setTextColor(...BLANCO);
+    doc.setTextColor(BLANCO[0], BLANCO[1], BLANCO[2]);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(11);
     doc.text('TOTAL A PAGAR:', totalsX - 2, y + 9.5);
-    doc.text(formatCOPPDF(total), W - 13, y + 9.5, { align: 'right' });
+    doc.text(String(formatCOPPDF(total)), W - 13, y + 9.5, { align: 'right' });
 
     y += 18;
 
     // ---- PUNTOS FIDELIZACIÓN ----
-    doc.setFillColor(...AMARILLO);
+    doc.setFillColor(AMARILLO[0], AMARILLO[1], AMARILLO[2]);
     doc.rect(10, y, W - 20, 14, 'F');
     doc.setTextColor(60, 40, 0);
     doc.setFont('helvetica', 'bold');
@@ -191,12 +192,12 @@ const _buildPDF = (order) => {
     y += 22;
 
     // ---- FOOTER ----
-    doc.setDrawColor(...VERDE);
+    doc.setDrawColor(VERDE[0], VERDE[1], VERDE[2]);
     doc.setLineWidth(0.3);
     doc.line(10, y, W - 10, y);
     y += 5;
 
-    doc.setTextColor(...GRIS_TEXTO);
+    doc.setTextColor(GRIS_TEXTO[0], GRIS_TEXTO[1], GRIS_TEXTO[2]);
     doc.setFont('helvetica', 'italic');
     doc.setFontSize(8);
     doc.text('¡Gracias por tu compra en MilAgro CS S.A.S! — "Del campo a tu hogar con calidad y confianza"', W / 2, y, { align: 'center' });
