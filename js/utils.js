@@ -97,6 +97,14 @@ const showToast = (message) => {
 // Lee los productos desde la memoria del navegador
 const fetchProducts = async () => {
     try {
+        const DB_VERSION = 2; // Forzar purga de datos antiguos para cargar el Excel nuevo
+        const storedVersion = localStorage.getItem('milagro_db_version');
+        
+        if (!storedVersion || parseInt(storedVersion) < DB_VERSION) {
+            localStorage.removeItem('milagro_db_products');
+            localStorage.setItem('milagro_db_version', DB_VERSION.toString());
+        }
+
         const stored = localStorage.getItem('milagro_db_products');
         if (stored) {
             return JSON.parse(stored);

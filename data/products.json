@@ -1,1 +1,164 @@
-[]
+[
+    {
+        "id": "P1001",
+        "name": "BROILER PIGMENTADO X 40 KG",
+        "category": "aves",
+        "price": 90000,
+        "stock": 10,
+        "description": "Alimento completo dise\u00f1ado para suministrarse a pollos de engorde como \u00fanico alimento a partir del d\u00eda 22 de vida y hasta siete d\u00edas antes del sacrificio.",
+        "image": "../assets/images/productos/Aves/BROILER-PIGMENTADO.PNG"
+    },
+    {
+        "id": "P1002",
+        "name": "POLLITOS INICIACI\u00d3N X 40 KG",
+        "category": "aves",
+        "price": 90000,
+        "stock": 10,
+        "description": "Alimento completo dise\u00f1ado para ser suministrado durante la etapa inicial del pollo de engorde, como \u00fanico alimento desde el d\u00eda 1 hasta el d\u00eda 21 de edad, o hasta alcanzar un consumo acumulado de 1.200 gramos por animal. ",
+        "image": "../assets/images/productos/Aves/POLLITOS-INICIACIO\u0301N.PNG"
+    },
+    {
+        "id": "P1003",
+        "name": "PONEDORA EXTRA I PIGMENTO X 40 KG",
+        "category": "aves",
+        "price": 92000,
+        "stock": 10,
+        "description": "Alimento completo para suministrar a gallinas ponedoras destinadas a la producci\u00f3n de huevo comercial como \u00fanico alimento durante todo el ciclo de producci\u00f3n ",
+        "image": "../assets/images/productos/Aves/PONEDORA-EXTRA-I-PIGMENTO.PNG"
+    },
+    {
+        "id": "P1004",
+        "name": "CERDOS SPR LEVANTE X 40 KG",
+        "category": "porcinos",
+        "price": 92000,
+        "stock": 10,
+        "description": "Alimento completo para ser suministrado a cerdos en etapa de levante desde que alcancen un peso de veinticinco (25) a treinta (30) Kilogramos, hasta cuando estos alcancen un peso de setenta (70) a ochenta (80) Kilogramos. ",
+        "image": "../assets/images/productos/Porcinos/CERDOS-SPR-LEVANTE.PNG"
+    },
+    {
+        "id": "P1005",
+        "name": "CERDOS SPR ENGORDE FINALIZADOR X 40 KG",
+        "category": "porcinos",
+        "price": 90000,
+        "stock": 10,
+        "description": "Alimento completo dise\u00f1ado para suministrarse a cerdos de ceba desde los 85 kilogramos de peso hasta alcanzar el peso ideal para el mercado, se debe suministrar como m\u00ednimo por 21 d\u00edas. ",
+        "image": "../assets/images/productos/Porcinos/CERDOS-SU\u0301PER-ENGORDE-FINALIZADOR.PNG"
+    },
+    {
+        "id": "P1006",
+        "name": "CONTELAC TROPICAL X 40 KG",
+        "category": "bovinos",
+        "price": 77000,
+        "stock": 10,
+        "description": "Suplemento alimenticio para suministrar a vacas lecheras y/o doble prop\u00f3sito en fase de producci\u00f3n que se encuentran en pastoreo como complemento a forrajes de mediana calidad y un nivel de fibra de medio a alto. ",
+        "image": "../assets/images/productos/Bovinos/CONTELAC-TROPICAL.PNG"
+    },
+    {
+        "id": "P1007",
+        "name": "TERNERAS LEVANTE TROPICAL X 40 KG",
+        "category": "bovinos",
+        "price": 92000,
+        "stock": 10,
+        "description": "Suplemento alimenticio para ser suministrado a terneras que se encuentran en climas medios y c\u00e1lidos como complemento de la leche materna o de reemplazantes de la leche en programas de alimentaci\u00f3n artificial desde los 5 d\u00edas de vida hasta los 6 meses de vida. ",
+        "image": "../assets/images/productos/Bovinos/TERNERAS-LEVANTE-TROPICAL.PNG"
+    },
+    {
+        "id": "P1008",
+        "name": "COMPLEMIL ORAL X 100 ML",
+        "category": "medicamentos_veterinarios",
+        "price": 9000,
+        "stock": 10,
+        "description": "Suplemento vitam\u00ednico y mineral dise\u00f1ado para la recuperaci\u00f3n y soporte nutricional de animales (bovinos, equinos, porcinos, caninos, felinos y aves) en estados de desnutrici\u00f3n, debilidad o enfermedades",
+        "image": "../assets/images/productos/Medicamentos Veterinarios/COMPLEMIL-100.PNG"
+    },
+    {
+        "id": "P1009",
+        "name": "PANZER X LITRO",
+        "category": "plaguicidas",
+        "price": 24000,
+        "stock": 10,
+        "description": "Herbicida no selectivo de aplicaci\u00f3n en post-emergencia y acci\u00f3n sist\u00e9mica, controla la mayor\u00eda de las malezas anuales y perennes, controla malezas de hoja ancha y hoja angosta.",
+        "image": "../assets/images/productos/Plaguicidas/PANZER-LITRO.PNG"
+    },
+    {
+        "id": "P1010",
+        "name": "PANZER X 1 KG",
+        "category": "plaguicidas",
+        "price": 35000,
+        "stock": 10,
+        "description": "Herbicida sist\u00e9mico, no selectivo de absorci\u00f3n foliar. Formulado como gr\u00e1nulos dispersables. Penetra por las hojas y se mueve por las partes a\u00e9reas y subterr\u00e1neas de las plantas causando la muerte total de las malezas en un periodo de 7 a 15 d\u00edas despu\u00e9s de la aplicaci\u00f3n.",
+        "image": "../assets/images/productos/Plaguicidas/PANZER-KILO.PNG"
+    },
+    {
+        "id": "P1011",
+        "name": "PECES ENGORDE 25 X 40 KG",
+        "category": "peces",
+        "price": 110000,
+        "stock": 10,
+        "description": "Alimento completo para ser suministrado en la fase de engorde del cultivo de Tilapia, Mojarra, Cachama, Carpa, Bagre y especies nativas cultivadas en los diversos sistemas de producci\u00f3n desde los 250 gramos hasta alcanzar las tallas finales de cosecha. ",
+        "image": "../assets/images/productos/Peces/PECES-25.PNG"
+    },
+    {
+        "id": "P1012",
+        "name": "PECES PREINICIO 45 X 40 KG",
+        "category": "peces",
+        "price": 168000,
+        "stock": 10,
+        "description": "Alimento completo para ser suministrado en la fase de iniciaci\u00f3n de Tilapia, Mojarra, Cachama, Carpa, Bagre y especies nativas cultivadas en sistemas de producci\u00f3n de estanque hasta alcanzar un peso de 20 gramos por animal.",
+        "image": "../assets/images/productos/Peces/PECES-45-EXT.PNG"
+    },
+    {
+        "id": "P1013",
+        "name": "CONEJINA X 1 KG",
+        "category": "mascotas",
+        "price": 4000,
+        "stock": 10,
+        "description": "Alimento completo dise\u00f1ado para ser suministrado a conejos desde el destete hasta el sacrificio. ",
+        "image": "../assets/images/productos/Mascotas/CONEJOS-KG.PNG"
+    },
+    {
+        "id": "P1014",
+        "name": "RINGO ORIGINAL ADULTOS X 30 KG",
+        "category": "mascotas",
+        "price": 160000,
+        "stock": 10,
+        "description": "Alimento completo y nutritivo para acompa\u00f1arlo en su d\u00eda a d\u00eda. ",
+        "image": "../assets/images/productos/Mascotas/RINGO-CROQ-ADT.PNG"
+    },
+    {
+        "id": "P1015",
+        "name": "CINTA AZUL ADULTOS X 40 KG",
+        "category": "equinos",
+        "price": 90000,
+        "stock": 10,
+        "description": "Suplemento alimenticio peletizado para equinos destinados a actividades f\u00edsicas de intensidad baja a alta.",
+        "image": "../assets/images/productos/Equinos/CINTA-AZUL-ADT.PNG"
+    },
+    {
+        "id": "P1016",
+        "name": "RODEO FIBRA X 40 KG",
+        "category": "equinos",
+        "price": 75000,
+        "stock": 10,
+        "description": "Alimento para suministrar a equinos adultos como complemento al forraje verde y/o heno. Sumin\u00edstrese a raz\u00f3n del 1% al 1.25% del peso vivo dividido en (3) o m\u00e1s raciones al d\u00eda sin superar los 2 kg por raci\u00f3n.",
+        "image": "../assets/images/productos/Equinos/RODEO-FIBRA.PNG"
+    },
+    {
+        "id": "P1017",
+        "name": "LIMA GAVILAN COLORADO",
+        "category": "herramientas_agricolas",
+        "price": 6000,
+        "stock": 10,
+        "description": "Lima triangular de excelente calidad.",
+        "image": "../assets/images/productos/Herramientas Agri\u0301colas/LIMA-GAVILAN.PNG"
+    },
+    {
+        "id": "P1018",
+        "name": "ROLLO MALLA GALLINERA",
+        "category": "herramientas_agricolas",
+        "price": 48000,
+        "stock": 10,
+        "description": "Rollo de malla plastica de 1.8 mts de alto x 50 mts de largo",
+        "image": "../assets/images/productos/Herramientas Agri\u0301colas/MALLA-GALLINERA.PNG"
+    }
+]
