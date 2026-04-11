@@ -15,7 +15,7 @@
         "price": 90000,
         "stock": 10,
         "description": "Alimento completo dise\u00f1ado para ser suministrado durante la etapa inicial del pollo de engorde, como \u00fanico alimento desde el d\u00eda 1 hasta el d\u00eda 21 de edad, o hasta alcanzar un consumo acumulado de 1.200 gramos por animal. ",
-        "image": "../assets/images/productos/Aves/POLLITOS-INICIACIO\u0301N.PNG"
+        "image": "../assets/images/productos/Aves/POLLITOS-INICIACION.PNG"
     },
     {
         "id": "P1003",
@@ -42,7 +42,7 @@
         "price": 90000,
         "stock": 10,
         "description": "Alimento completo dise\u00f1ado para suministrarse a cerdos de ceba desde los 85 kilogramos de peso hasta alcanzar el peso ideal para el mercado, se debe suministrar como m\u00ednimo por 21 d\u00edas. ",
-        "image": "../assets/images/productos/Porcinos/CERDOS-SU\u0301PER-ENGORDE-FINALIZADOR.PNG"
+        "image": "../assets/images/productos/Porcinos/CERDOS-SUPER-ENGORDE-FINALIZADOR.PNG"
     },
     {
         "id": "P1006",
@@ -69,7 +69,7 @@
         "price": 9000,
         "stock": 10,
         "description": "Suplemento vitam\u00ednico y mineral dise\u00f1ado para la recuperaci\u00f3n y soporte nutricional de animales (bovinos, equinos, porcinos, caninos, felinos y aves) en estados de desnutrici\u00f3n, debilidad o enfermedades",
-        "image": "../assets/images/productos/Medicamentos Veterinarios/COMPLEMIL-100.PNG"
+        "image": "../assets/images/productos/Medicamentos_Veterinarios/COMPLEMIL-100.PNG"
     },
     {
         "id": "P1009",
@@ -150,7 +150,7 @@
         "price": 6000,
         "stock": 10,
         "description": "Lima triangular de excelente calidad.",
-        "image": "../assets/images/productos/Herramientas Agri\u0301colas/LIMA-GAVILAN.PNG"
+        "image": "../assets/images/productos/Herramientas_Agricolas/LIMA-GAVILAN.PNG"
     },
     {
         "id": "P1018",
@@ -159,6 +159,6 @@
         "price": 48000,
         "stock": 10,
         "description": "Rollo de malla plastica de 1.8 mts de alto x 50 mts de largo",
-        "image": "../assets/images/productos/Herramientas Agri\u0301colas/MALLA-GALLINERA.PNG"
+        "image": "../assets/images/productos/Herramientas_Agricolas/MALLA-GALLINERA.PNG"
     }
 ]
