@@ -69,7 +69,9 @@ const renderInventory = (products) => {
             statusHtml = `<span class="status-badge status-ok">Normal</span>`;
         }
         
-        let thumb = p.image || '../../assets/images/hero-bg.jpg';
+        // Las rutas del JSON vienen como '../assets/...', pero estamos dentro de pages/admin/
+        // por lo que debemos bajar un nivel más añadiendo otro '../'
+        let thumb = p.image ? p.image.replace('../assets', '../../assets') : '../../assets/images/hero-bg.jpg';
 
         html += `
             <tr>
